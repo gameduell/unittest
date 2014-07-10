@@ -20,7 +20,6 @@ class MainTester extends AppMain
     private var r : TestRunner;
     override function start() : Void
     {
-        var a :Array<Int>;
         r = new TestRunner(testComplete);
         r.add(new SimpleTest());
         r.add(new AsyncTest());

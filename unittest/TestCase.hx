@@ -19,6 +19,7 @@ class TestCase extends haxe.unit.TestCase
 
     private var currentAsyncStart : TestStatus;
     private var currentAsyncTimeout : Timer;
+    private var currentAsyncFunction : Void -> Void;
 
     public function new() : Void
     {
@@ -27,12 +28,14 @@ class TestCase extends haxe.unit.TestCase
         super();
     }
 
-    public function assertAsyncStart(timeoutInSeconds : Float = 1.0) : Void
+    public function assertAsyncStart(functionForAsyncToFinish : Void -> Void, timeoutInSeconds : Float = 1.0) : Void
     {
         if(currentAsyncStart != null)
         {
             throw "Can only have one async assert at one time";
         }
+
+        currentAsyncFunction = functionForAsyncToFinish;
 
         currentAsyncStart = cast currentTest;
 
@@ -53,10 +56,11 @@ class TestCase extends haxe.unit.TestCase
         }, cast (timeoutInSeconds * 1000));
     }
 
-    public function assertAsyncFinish() : Void
+    public function assertAsyncFinish(functionForAsyncToFinish : Void -> Void) : Void
     {
-        if(currentAsyncStart != currentTest)
+        if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
         {
+            trace("LOL");
             return; /// timeout happened before
         }
 
@@ -74,6 +78,7 @@ class TestCase extends haxe.unit.TestCase
     {
         currentAsyncStart = null;
         currentAsyncTimeout = null;
+        currentAsyncFunction = null;
     }
 
 }

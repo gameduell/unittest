@@ -5,6 +5,7 @@
  * Time: 15:13
  */
 
+import haxe.Timer;
 import platform.Platform;
 class AsyncTest extends unittest.TestCase
 {
@@ -23,30 +24,30 @@ class AsyncTest extends unittest.TestCase
             updatesLeft--;
             if(updatesLeft > 0)
             {
-                assertAsyncFinish();
+                assertAsyncFinish(test1);
                 Platform.instance().onUpdate.remove(updateFunction);
             }
         };
 
         Platform.instance().onUpdate.add(updateFunction);
 
-        assertAsyncStart();
+        assertAsyncStart(test1);
     }
 
-
-
-    public function testStartAnotherOneBeforeTimeout1()
+    public function test2()
     {
-        assertAsyncStart(0.1);
+        assertAsyncStart(test2, 0.1);
+
+        Timer.delay(function (){assertAsyncFinish(test2);}, 1000);
+
+        assertTrue(true);
 
         assertShouldFail();
 
-        ///should timeout after the other one is started
+        ///should timeout
     }
 
-
-
-    public function testStartAnotherOneBeforeTimeout2()
+    public function test3()
     {
         var updatesLeft = 3;
 
@@ -59,14 +60,14 @@ class AsyncTest extends unittest.TestCase
             updatesLeft--;
             if(updatesLeft > 0)
             {
-                assertAsyncFinish();
+                assertAsyncFinish(test3);
                 Platform.instance().onUpdate.remove(updateFunction);
             }
         };
 
         Platform.instance().onUpdate.add(updateFunction);
 
-        assertAsyncStart();
+        assertAsyncStart(test3);
     }
 
 
