@@ -38,36 +38,18 @@ class AsyncTest extends unittest.TestCase
     {
         assertAsyncStart(test2, 0.1);
 
-        Timer.delay(function (){assertAsyncFinish(test2);}, 1000);
-
-        assertTrue(true);
+        Timer.delay(function (){assertAsyncFinish(test2);}, 500);
 
         assertShouldFail();
-
         ///should timeout
     }
 
     public function test3()
     {
-        var updatesLeft = 3;
+        ///after 500ms, test2 timeout should happen
+        assertAsyncStart(test3, 2);
 
-        var updateFunction : Float -> Void = null;
-
-        updateFunction = function(time : Float) {
-            assertTrue(true);
-            assertFalse(false);
-
-            updatesLeft--;
-            if(updatesLeft > 0)
-            {
-                assertAsyncFinish(test3);
-                Platform.instance().onUpdate.remove(updateFunction);
-            }
-        };
-
-        Platform.instance().onUpdate.add(updateFunction);
-
-        assertAsyncStart(test3);
+        Timer.delay(function (){assertAsyncFinish(test3);}, 1000);
     }
 
 

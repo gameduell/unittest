@@ -43,7 +43,7 @@ class TestCase extends haxe.unit.TestCase
 
         currentAsyncTimeout = Timer.delay( function() {
 
-            if(currentTest != currentAsyncStart)
+            if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
                 return; /// not the current test anymore
 
             currentTest.error = "Async timeout";
@@ -60,9 +60,10 @@ class TestCase extends haxe.unit.TestCase
     {
         if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
         {
-            trace("LOL");
             return; /// timeout happened before
         }
+
+        currentTest.done = true;
 
         clearAsync();
 
