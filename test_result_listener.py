@@ -38,12 +38,20 @@ class urlhandler:
 if __name__ == '__main__':
     import os
     import subprocess
+    import threading
+    import datetime
+        
+    class ThreadClass(threading.Thread):
+        def run(self):
+            os.chdir("test")
+            print "LAUNCHING LIME"
+            p = subprocess.Popen(["haxelib", 'run', "lime", "test", "html5"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            print "LAUNCHED LIME"
+            os.chdir("..")
+    
+    t = ThreadClass()
+    t.start()
 
-    os.chdir("test")
-    print "LAUNCHING LIME"
-    p = subprocess.Popen(["haxelib", 'run', "lime", "test", "html5"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print "LAUNCHED LIME"
-    os.chdir("..")
 
     app.run()
 
