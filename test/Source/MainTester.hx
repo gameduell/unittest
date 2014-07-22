@@ -32,9 +32,7 @@ class MainTester extends AppMain
 
     public function testComplete()
     {
-        #if js
-        js.Browser.window.close();
-        #end
+        
     }
 
 }
