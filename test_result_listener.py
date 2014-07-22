@@ -40,7 +40,9 @@ if __name__ == '__main__':
     import subprocess
 
     os.chdir("test")
+    print "LAUNCHING LIME"
     p = subprocess.Popen(["haxelib", 'run', "lime", "test", "html5"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    print "LAUNCHED LIME"
     os.chdir("..")
 
     app.run()
@@ -50,6 +52,6 @@ if __name__ == '__main__':
     if len(server_line) != 0:
         import re
         server_line_split = re.split('\\s+', server_line[0])
-        
+
         server_pid = server_line_split[1]
         subprocess.check_output(["kill", server_pid])
