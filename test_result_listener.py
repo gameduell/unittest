@@ -36,6 +36,7 @@ class urlhandler:
         return "OK"
 
 if __name__ == '__main__':
+    '''
     import os
     import subprocess
     import threading
@@ -45,16 +46,16 @@ if __name__ == '__main__':
         def run(self):
             os.chdir("test")
             print "LAUNCHING LIME"
-            p = subprocess.Popen(["haxelib", 'run', "lime", "test", "html5"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess.call(["haxelib", 'run', "lime", "test", "html5"])
             print "LAUNCHED LIME"
             os.chdir("..")
     
     t = ThreadClass()
     t.start()
-
+    '''
 
     app.run()
-
+    '''
     output = subprocess.check_output(["ps", "aux"])
     server_line = [line for line in output.split("\n") if "http-server" in line]
     if len(server_line) != 0:
@@ -63,3 +64,4 @@ if __name__ == '__main__':
 
         server_pid = server_line_split[1]
         subprocess.check_output(["kill", server_pid])
+        '''
