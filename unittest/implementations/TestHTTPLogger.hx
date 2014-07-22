@@ -19,7 +19,7 @@ class TestHTTPLogger implements unittest.TestLogger
     private var request : URLRequest;
     private var url : String;
 
-    public function new(testLogger : TestLogger, url : String = "http://localhost:8080") : Void
+    public function new(testLogger : TestLogger, url : String = "http://localhost:8181") : Void
     {
         logger = testLogger;
 
