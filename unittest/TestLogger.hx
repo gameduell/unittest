@@ -15,7 +15,7 @@ interface TestLogger
 {
     public function setup() : Void;
 
-    public function finish(result : TestResult) :  Void;
+    public function finish(result : TestResult, onFinishedCallback : TestLogger -> Void) :  Void;
 
     public function logStartCase(currentCase : TestCase) : Void;
 

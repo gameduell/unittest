@@ -15,6 +15,7 @@ import unittest.TestRunner;
 import SimpleTest;
 import AsyncTest;
 
+
 class MainTester extends AppMain
 {
     private var r : TestRunner;
@@ -31,7 +32,9 @@ class MainTester extends AppMain
 
     public function testComplete()
     {
-
+        #if js
+        js.Browser.window.close();
+        #end
     }
 
 }

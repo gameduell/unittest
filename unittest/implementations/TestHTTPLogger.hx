@@ -23,6 +23,11 @@ class TestHTTPLogger implements unittest.TestLogger
     {
         logger = testLogger;
 
+        if(logger == null)
+        {
+            throw "Null logger passed to TestHTTPLogger";
+        }
+
         this.url = url;
 
         logger.setLogMessageHandler(loggedMessageInterception);
@@ -42,11 +47,15 @@ class TestHTTPLogger implements unittest.TestLogger
         logger.setup();
     }
 
-    public function finish(result : TestResult) :  Void
+    private var onFinishedCallback : TestLogger -> Void;
+    public function finish(result : TestResult, onFinishedCallback : TestLogger -> Void) :  Void
     {
-        logger.finish(result);
+        logger.finish(result, innerLoggerFinished);
+        this.onFinishedCallback = onFinishedCallback;
+    }
 
-
+    private function innerLoggerFinished(testLogger : TestLogger)
+    {
         print("\n\nTestHTTPLogger: posting log to "  + url + ":\n");
 
         request = new URLRequest(url);
@@ -57,15 +66,17 @@ class TestHTTPLogger implements unittest.TestLogger
         request.send();
     }
 
-
     private function onData(data:String):Void
     {
         print("TestHTTPLogger: response:\n"  + data + "\n");
+        trace("HEUHEUEHE");
+        onFinishedCallback(this);
     }
 
     private function onError(msg:String):Void
     {
         print("TestHTTPLogger: error:\n"  + msg + "\n");
+        onFinishedCallback(this);
     }
 
     public function logStartCase(currentCase : TestCase) : Void

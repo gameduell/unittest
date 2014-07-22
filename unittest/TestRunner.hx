@@ -71,12 +71,33 @@ class TestRunner extends haxe.unit.TestRunner
         }
     }
 
-    private function logFinish() : Void
+    private var loggersToFinish : Array<TestLogger>;
+    private function logFinishAndExit() : Void
     {
+        if(loggerList.length == 0)
+        {
+            onComplete();
+        }
+
+        loggersToFinish = new Array<TestLogger>();
         for(testLogger in loggerList)
         {
-            testLogger.finish(cast result);
+            loggersToFinish.push(testLogger);
+            testLogger.finish(cast result, loggerFinished);
         }
+
+
+    }
+
+    private function loggerFinished(logger : TestLogger) : Void
+    {
+        loggersToFinish.remove(logger);
+
+        if(loggersToFinish.length == 0)
+        {
+            onComplete();
+        }
+
     }
 
     private function logStartCase() : Void
@@ -310,8 +331,6 @@ class TestRunner extends haxe.unit.TestRunner
 
     function finish()
     {
-        logFinish();
-
-        onComplete();
+        logFinishAndExit();
     }
 }

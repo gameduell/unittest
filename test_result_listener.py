@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
+import sys
 import web
 import json
 from urllib import quote, unquote
 
 urls = ('(.*)', 'urlhandler')
 
-
+app = web.application(urls, globals())
 def rawRequest(env):
     raw_post_data = env['wsgi.input'].read(int(env['CONTENT_LENGTH']))
     post_data = None
@@ -30,8 +31,8 @@ class urlhandler:
         web.header('Access-Control-Allow-Credentials', 'true')
         s = rawRequest(web.ctx.env)
         print "\n%s\n%s\n%s\n" % ('-'*60, s, '-'*60)
+        app.stop();
         return "OK"
 
 if __name__ == '__main__':
-    app = web.application(urls, globals())
     app.run()

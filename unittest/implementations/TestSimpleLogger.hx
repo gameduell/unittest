@@ -21,9 +21,11 @@ class TestSimpleLogger implements unittest.TestLogger
 
     }
 
-    public function finish(result : TestResult) :  Void
+    public function finish(result : TestResult, onFinishedCallback : TestLogger -> Void) :  Void
     {
         print(result.toString());
+
+        onFinishedCallback(this);
     }
 
     private var oldTrace : Dynamic;
