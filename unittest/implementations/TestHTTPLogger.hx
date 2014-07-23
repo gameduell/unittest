@@ -19,7 +19,14 @@ class TestHTTPLogger implements unittest.TestLogger
     private var request : URLRequest;
     private var url : String;
 
-    public function new(testLogger : TestLogger, url : String = "http://localhost:8181") : Void
+#if android
+    static public var DEFAULT_URL = "http://localhost:8181";
+#else
+    static public var DEFAULT_URL = "http://10.0.2.2:8181";
+#end
+
+    public function new(testLogger : TestLogger, url : String = null) : Void
+    public function new(testLogger : TestLogger, url : String = null) : Void
     {
         logger = testLogger;
 
@@ -28,7 +35,10 @@ class TestHTTPLogger implements unittest.TestLogger
             throw "Null logger passed to TestHTTPLogger";
         }
 
-        this.url = url;
+        if(url == null)
+            this.url = DEFAULT_URL;
+        else
+            this.url = url;
 
         logger.setLogMessageHandler(loggedMessageInterception);
 
