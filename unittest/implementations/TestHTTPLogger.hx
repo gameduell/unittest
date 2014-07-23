@@ -69,7 +69,6 @@ class TestHTTPLogger implements unittest.TestLogger
     private function onData(data:String):Void
     {
         print("TestHTTPLogger: response:\n"  + data + "\n");
-        trace("HEUHEUEHE");
         onFinishedCallback(this);
     }
 
