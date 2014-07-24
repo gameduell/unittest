@@ -26,7 +26,6 @@ class TestHTTPLogger implements unittest.TestLogger
 #end
 
     public function new(testLogger : TestLogger, url : String = null) : Void
-    public function new(testLogger : TestLogger, url : String = null) : Void
     {
         logger = testLogger;
 
