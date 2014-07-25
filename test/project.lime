@@ -15,5 +15,7 @@
 	<icon path="Assets/lime.svg" />
 
 	<window fps="60" />
+	
+	<set name="ANDROID_INSTALL_LOCATION" value="auto" />
 </project>
 
