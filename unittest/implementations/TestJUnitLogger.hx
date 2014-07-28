@@ -46,7 +46,7 @@ class TestJUnitLogger implements unittest.TestLogger
         });
 
 
-    	print("<testsuite name=\"" + Type.getClass(currentCase) + "\" currentCasetests=\"" + functionNames.length + "\">" + "\n");
+    	print("<testsuite name=\"" + Type.getClassName(Type.getClass(currentCase)) + "\" currentCasetests=\"" + functionNames.length + "\">" + "\n");
     }
 
     private var currentTest : TestStatus;
