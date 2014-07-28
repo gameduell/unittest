@@ -17,7 +17,8 @@ class AsyncTest extends unittest.TestCase
 
         var updateFunction : Float -> Void = null;
 
-        updateFunction = function(time : Float) {
+        updateFunction = function(time : Float)
+        {
             assertTrue(true);
             assertFalse(false);
 
@@ -28,6 +29,7 @@ class AsyncTest extends unittest.TestCase
                 Platform.instance().onUpdate.remove(updateFunction);
             }
         };
+
 
         Platform.instance().onUpdate.add(updateFunction);
 

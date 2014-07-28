@@ -221,6 +221,8 @@ class TestRunner extends haxe.unit.TestRunner
 
         currentCase.setup();
 
+        currentTest.timeStarted = Timer.stamp();
+
         try
         {
             Reflect.callMethod(currentCase, Reflect.field(currentCase, functionName), new Array());
@@ -291,6 +293,8 @@ class TestRunner extends haxe.unit.TestRunner
         }
 
         currentTestShouldFail = false;
+
+        currentTest.timeEnded = Timer.stamp();
 
         logEndTest();
 

@@ -20,6 +20,8 @@ enum TestStatusType
 class TestStatus extends haxe.unit.TestStatus
 {
     public var testResultType : TestStatusType;
+    public var timeStarted : Float;
+    public var timeEnded : Float;
 
     public function new() : Void
     {

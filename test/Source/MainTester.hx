@@ -7,7 +7,7 @@
 
 
 import unittest.implementations.TestHTTPLogger;
-import unittest.implementations.TestSimpleLogger;
+import unittest.implementations.TestJUnitLogger;
 import platform.AppMain;
 
 import unittest.TestRunner;
@@ -25,7 +25,7 @@ class MainTester extends AppMain
         r.add(new SimpleTest());
         r.add(new AsyncTest());
 
-        r.addLogger(new TestHTTPLogger(new TestSimpleLogger()));
+        r.addLogger(new TestHTTPLogger(new TestJUnitLogger()));
 
         r.run();
     }
