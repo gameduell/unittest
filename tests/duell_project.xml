@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<app title="Test Testing" file="TestTesting" package="com.gameduell.tests" version="0.0.1" company="GameDuell GmbH" />
+	<main name="MainTester" />
+
+	<source path="Source" />
+
+	<duelllib name="duellkit" />
+	<duelllib name="types" />
+	<duelllib name="unittest" />
+	
+</project>
+

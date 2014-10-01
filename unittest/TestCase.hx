@@ -6,7 +6,7 @@
  */
 package unittest;
 
-import haxe.Timer;
+import asyncrunner.DelayedTask;
 import haxe.unit.TestCase;
 
 import unittest.TestStatus;
@@ -18,7 +18,6 @@ class TestCase extends haxe.unit.TestCase
     private var testRunner : unittest.TestRunner;
 
     private var currentAsyncStart : TestStatus;
-    private var currentAsyncTimeout : Timer;
     private var currentAsyncFunction : Void -> Void;
 
     public function new() : Void
@@ -41,7 +40,7 @@ class TestCase extends haxe.unit.TestCase
 
         testRunner.currentTestIsAsync = true;
 
-        currentAsyncTimeout = Timer.delay( function() {
+        DelayedTask.delay(function() {
 
             if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
                 return; /// not the current test anymore
@@ -53,7 +52,7 @@ class TestCase extends haxe.unit.TestCase
 
             testRunner.endTest(currentTest);
 
-        }, cast (timeoutInSeconds * 1000));
+        }, timeoutInSeconds);
     }
 
     public function assertAsyncFinish(functionForAsyncToFinish : Void -> Void) : Void
@@ -78,7 +77,6 @@ class TestCase extends haxe.unit.TestCase
     public function clearAsync() : Void
     {
         currentAsyncStart = null;
-        currentAsyncTimeout = null;
         currentAsyncFunction = null;
     }
 

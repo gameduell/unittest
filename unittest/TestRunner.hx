@@ -16,9 +16,9 @@ import haxe.CallStack;
 import haxe.Timer;
 import haxe.rtti.Meta;
 
-import platform.Platform;
-
 import asyncrunner.RunLoop;
+
+import duell.DuellKit;
 
 using Lambda;
 
@@ -139,7 +139,7 @@ class TestRunner extends haxe.unit.TestRunner
     {
         logSetup();
 
-        Platform.instance().onError.add(onError);
+        DuellKit.instance().onError.add(onError);
 
         result = new TestResult();
 
