@@ -16,13 +16,12 @@ import haxe.Http;
 class TestHTTPLogger implements unittest.TestLogger
 {
     private var logger : TestLogger;
-    private var request : URLRequest;
     private var url : String;
 
 #if android
     static public var DEFAULT_URL = "http://10.0.2.2:8181";
 #else
-    static public var DEFAULT_URL = "http://localhost:8181";
+    static public var DEFAULT_URL = "http://0.0.0.0:8181";
 #end
 
     public function new(testLogger : TestLogger, url : String = null) : Void
@@ -40,14 +39,11 @@ class TestHTTPLogger implements unittest.TestLogger
             this.url = url;
 
         logger.setLogMessageHandler(loggedMessageInterception);
-
-        messageBuffer = "";
     }
 
-    private var messageBuffer : String;
     public function loggedMessageInterception(message : Dynamic) : Void
     {
-        messageBuffer += message;
+        postTestMessage(message);
         print(message);
     }
 
@@ -59,32 +55,44 @@ class TestHTTPLogger implements unittest.TestLogger
     private var onFinishedCallback : TestLogger -> Void;
     public function finish(result : TestResult, onFinishedCallback : TestLogger -> Void) :  Void
     {
-        logger.finish(result, innerLoggerFinished);
         this.onFinishedCallback = onFinishedCallback;
+        logger.finish(result, postTestEnded);
     }
 
-    private function innerLoggerFinished(testLogger : TestLogger)
+    private function postTestEnded(testLogger : TestLogger)
     {
-        print("\n\nTestHTTPLogger: posting log to "  + url + ":\n");
-
-        request = new URLRequest(url);
-        request.onData = onData;
-        request.onError = onError;
-        request.data = messageBuffer;
+        var request = new URLRequest(url);
+        request.onData = function onData(data:String):Void
+        {
+            onFinishedCallback(this);
+        };
+        request.onError = function onError(msg:String):Void
+        {
+            print("TestHTTPLogger: error:\n"  + msg + "\n");
+            onFinishedCallback(this);
+        };
+        request.data = "===END===";
 
         request.send();
     }
 
-    private function onData(data:String):Void
+    private function postTestMessage(testMessage : String)
     {
-        print("TestHTTPLogger: response:\n"  + data + "\n");
-        onFinishedCallback(this);
-    }
 
-    private function onError(msg:String):Void
-    {
-        print("TestHTTPLogger: error:\n"  + msg + "\n");
-        onFinishedCallback(this);
+        var request = new URLRequest(url);
+
+        request.onData = function onData(data:String):Void
+        {
+        };
+
+        request.onError = function onError(msg:String):Void
+        {
+            print("TestHTTPLogger: error:\n"  + msg + "\n");
+        };
+
+        request.data = testMessage;
+
+        request.send();
     }
 
     public function logStartCase(currentCase : TestCase) : Void
