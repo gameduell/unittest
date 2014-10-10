@@ -11,6 +11,11 @@ import unittest.TestResult;
 import unittest.TestCase;
 import unittest.TestStatus;
 import haxe.Http;
+import unittest.Utils;
+
+#if android
+import hxjni.JNI;
+#end
 
 
 class TestHTTPLogger implements unittest.TestLogger
@@ -21,7 +26,7 @@ class TestHTTPLogger implements unittest.TestLogger
 #if android
     static public var DEFAULT_URL = "http://10.0.2.2:8181";
 #else
-    static public var DEFAULT_URL = "http://0.0.0.0:8181";
+    static public var DEFAULT_URL = "http://localhost:8181";
 #end
 
     public function new(testLogger : TestLogger, url : String = null) : Void
@@ -129,67 +134,8 @@ class TestHTTPLogger implements unittest.TestLogger
             return;
         }
 
-        #if flash9
-			if( tf == null ) {
-				tf = new flash.text.TextField();
-				tf.selectable = false;
-				tf.width = flash.Lib.current.stage.stageWidth;
-				tf.autoSize = flash.text.TextFieldAutoSize.LEFT;
-				flash.Lib.current.addChild(tf);
-			}
-			tf.appendText(v);
-		#elseif flash
-			var root = flash.Lib.current;
-			if( tf == null ) {
-				root.createTextField("__tf",1048500,0,0,flash.Stage.width,flash.Stage.height+30);
-				tf = root.__tf;
-				tf.selectable = false;
-				tf.wordWrap = true;
-			}
-			var s = flash.Boot.__string_rec(v,"");
-			tf.text += s;
-			while( tf.textHeight > flash.Stage.height ) {
-				var lines = tf.text.split("\r");
-				lines.shift();
-				tf.text = lines.join("\n");
-			}
-		#elseif neko
-			__dollar__print(v);
-		#elseif php
-			php.Lib.print(v);
-		#elseif cpp
-			cpp.Lib.print(v);
-		#elseif js
-			var msg = js.Boot.__string_rec(v,"");
-			var d;
-            if( __js__("typeof")(document) != "undefined"
-                    && (d = document.getElementById("haxe:trace")) != null ) {
-                msg = msg.split("\n").join("<br/>");
-                d.innerHTML += StringTools.htmlEscape(msg)+"<br/>";
-            }
-			else if (  __js__("typeof process") != "undefined"
-					&& __js__("process").stdout != null
-					&& __js__("process").stdout.write != null)
-				__js__("process").stdout.write(msg); // node
-			else if (  __js__("typeof console") != "undefined"
-					&& __js__("console").log != null )
-				__js__("console").log(msg); // document-less js (which may include a line break)
-
-		#elseif cs
-			cs.system.Console.Write(v);
-		#elseif java
-			var str:String = v;
-			untyped __java__("java.lang.System.out.print(str)");
-		#end
+        Utils.print(v);
     }
-
-
-
-    #if flash9
-        static var tf : flash.text.TextField = null;
-    #elseif flash
-        static var tf : flash.TextField = null;
-    #end
 
 }
 
@@ -197,6 +143,8 @@ class TestHTTPLogger implements unittest.TestLogger
 
 class URLRequest
 {
+
+#if (!android)
     public var onData:Dynamic -> Void;
     public var onError:Dynamic ->Void;
     public var data:Dynamic;
@@ -289,4 +237,37 @@ class URLRequest
             onData(value);
     }
 	#end
+
+#else
+
+    private var j_post = JNI.createStaticMethod("org/haxe/duell/unittest/TestHTTPLoggerPoster", "post", "(Ljava/lang/String;)V");
+
+    public var onData:Dynamic -> Void;
+    public var onError:Dynamic ->Void;
+    public var data:Dynamic;
+
+    var url:String;
+    var headers:StringMap<String>;
+
+    public function new(url:String)
+    {
+        this.url = url;
+    }
+
+    function createClient(url:String)
+    {
+
+    }
+
+    public function setHeader(name:String, value:String)
+    {
+
+    }
+
+    public function send()
+    {
+        j_post("" + data);
+    }
+
+#end
 }

@@ -3,4 +3,12 @@
 
     <duelllib name="duellkit" />
 
+    <duelllib name="hxjni" if="android" />
+
+    <platform-config>
+    	<android>
+    		<java-source name="TestHTTPLoggerPoster" path="java" />
+    		<permission name="android.permission.INTERNET" />
+		</android>
+	</platform-config>
 </library>

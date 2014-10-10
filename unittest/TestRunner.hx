@@ -9,6 +9,7 @@ package unittest;
 import unittest.TestCase;
 import unittest.TestLogger;
 import unittest.TestStatus;
+import unittest.Utils;
 
 import asyncrunner.FunctionTask;
 
@@ -44,6 +45,8 @@ class TestRunner extends haxe.unit.TestRunner
     var caseIndex:Int = 0;
     var testIndex:Int = 0;
 
+    private var oldTrace : Dynamic;
+
     public function new(onComplete: Void->Void) : Void
     {
         loggerList = new Array<TestLogger>();
@@ -65,6 +68,7 @@ class TestRunner extends haxe.unit.TestRunner
 
     private function logSetup() : Void
     {
+
         for(testLogger in loggerList)
         {
             testLogger.setup();
@@ -225,6 +229,13 @@ class TestRunner extends haxe.unit.TestRunner
 
         try
         {
+            oldTrace = haxe.Log.trace;
+            haxe.Log.trace = function customTrace( v, ?p : haxe.PosInfos )
+            {
+                var str = Std.string(v);
+                Utils.print(p.fileName+":"+p.lineNumber+": "+str+(str.indexOf("\n") == -1 ? "\n" : ""));
+            };
+
             Reflect.callMethod(currentCase, Reflect.field(currentCase, functionName), new Array());
 
             if(currentTestIsAsync)
@@ -249,6 +260,8 @@ class TestRunner extends haxe.unit.TestRunner
     @:allow(unittest.TestCase)
     private function endTest(e:Dynamic = null)
     {
+        haxe.Log.trace = oldTrace;
+
         if (Std.is(e, unittest.TestStatus))
         {
             currentTest.testResultType = TestStatusTypeFailure;
