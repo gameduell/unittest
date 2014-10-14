@@ -3,6 +3,12 @@
 
     <duelllib name="duellkit" />
 
+    <duelllib name="asyncrunner" />
+
+    <haxelib name="msignal" />
+
+    <haxelib name="polygonal-ds" />
+
     <duelllib name="hxjni" if="android" />
 
     <platform-config>

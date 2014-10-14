@@ -12,6 +12,10 @@ import unittest.TestCase;
 import unittest.TestStatus;
 import haxe.Http;
 import unittest.Utils;
+import asyncrunner.Task;
+
+import de.polygonal.ds.LinkedQueue;
+import msignal.Signal.Signal1;
 
 #if android
 import hxjni.JNI;
@@ -22,6 +26,8 @@ class TestHTTPLogger implements unittest.TestLogger
 {
     private var logger : TestLogger;
     private var url : String;
+
+    private var httpMessageQueue : SequentialTaskQueue = new SequentialTaskQueue();
 
 #if android
     static public var DEFAULT_URL = "http://10.0.2.2:8181";
@@ -66,38 +72,15 @@ class TestHTTPLogger implements unittest.TestLogger
 
     private function postTestEnded(testLogger : TestLogger)
     {
-        var request = new URLRequest(url);
-        request.onData = function onData(data:String):Void
-        {
-            onFinishedCallback(this);
-        };
-        request.onError = function onError(msg:String):Void
-        {
-            print("TestHTTPLogger: error:\n"  + msg + "\n");
-            onFinishedCallback(this);
-        };
-        request.data = "===END===";
-
-        request.send();
+        httpMessageQueue.queueIsEmpty.add(function(taskQueue : SequentialTaskQueue) onFinishedCallback(this));
+        var httpRequestTask = new HttpPostTask(url, "===END===");
+        httpMessageQueue.add(httpRequestTask);
     }
 
     private function postTestMessage(testMessage : String)
     {
-
-        var request = new URLRequest(url);
-
-        request.onData = function onData(data:String):Void
-        {
-        };
-
-        request.onError = function onError(msg:String):Void
-        {
-            print("TestHTTPLogger: error:\n"  + msg + "\n");
-        };
-
-        request.data = testMessage;
-
-        request.send();
+        var httpRequestTask = new HttpPostTask(url, testMessage);
+        httpMessageQueue.add(httpRequestTask);
     }
 
     public function logStartCase(currentCase : TestCase) : Void
@@ -136,7 +119,68 @@ class TestHTTPLogger implements unittest.TestLogger
 
         Utils.print(v);
     }
+}
 
+class SequentialTaskQueue
+{
+    var queue : LinkedQueue<Task> = new LinkedQueue<Task>();
+
+    public var queueIsEmpty : Signal1<SequentialTaskQueue> = new Signal1(); 
+    public function new()
+    {
+
+    }
+
+    public function add(task : Task)
+    {
+        task.onFinish.add(taskFinished);
+        if (queue.size() != 0)
+        {
+            queue.back().onFinish.add(function(t : Task) task.execute());
+            queue.enqueue(task);
+        }
+        else
+        {
+            queue.enqueue(task);
+            task.execute();
+        }
+    }
+
+    public function taskFinished(task : Task)
+    {
+        queue.dequeue();
+
+        if (queue.size() == 0)
+        {
+            queueIsEmpty.dispatch(this);
+        }
+    }
+}
+
+class HttpPostTask extends Task
+{
+    public var urlRequest : URLRequest;  
+    public function new(url : String, data : String)
+    {
+        super();
+
+        urlRequest = new URLRequest(url);
+
+        urlRequest.onData = function onData(data:String):Void
+        { 
+            finishExecution();
+        };
+        urlRequest.onError = function onError(msg:String):Void
+        {
+            finishExecution();
+        };
+        urlRequest.data = data;
+    }
+
+    override function execute()
+    {
+        urlRequest.send();
+    }
 }
 
 // TODO This is a simple wrapper shamefully stolen from munit. Should get a proper one from our eventual network lib.
@@ -267,6 +311,7 @@ class URLRequest
     public function send()
     {
         j_post("" + data);
+        onData("OK");
     }
 
 #end

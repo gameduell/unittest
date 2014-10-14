@@ -64,20 +64,20 @@ class TestJUnitLogger implements unittest.TestLogger
 				print("<testcase classname=\"" + currentTest.classname + "\" name=\"" + currentTest.method + "\" time=\"" + (currentTest.timeEnded - currentTest.timeStarted) + "\" />" + "\n");
             case TestStatusTypeFailure:
 				print("<testcase classname=\"" + currentTest.classname + "\" name=\"" + currentTest.method + "\" time=\"" + (currentTest.timeEnded - currentTest.timeStarted) + "\" >" + "\n");
-				print("<failure type=\"" + "Failure" + "\">");
+				print("<failure type=\"" + "Failure" + "\">" + "\n");
 				if(currentTest.posInfos != null)
             		print(currentTest.posInfos.fileName+":" + currentTest.posInfos.lineNumber + ": " + currentTest.error + "\n");
             	else
-            		print(currentTest.error);
+            		print(currentTest.error + "\n");
 				print("</failure>" + "\n");
 				print("</testcase>" + "\n");
             case TestStatusTypeError:
 				print("<testcase classname=\"" + currentTest.classname + "\" name=\"" + currentTest.method + "\" time=\"" + (currentTest.timeEnded - currentTest.timeStarted) + "\" >" + "\n");
-				print("<error type=\"" + "Error" + "\">");
+				print("<error type=\"" + "Error" + "\">" + "\n");
 				if(currentTest.posInfos != null)
             		print(currentTest.posInfos.fileName+":" + currentTest.posInfos.lineNumber + ": " + currentTest.error + "\n");
             	else
-            		print(currentTest.error);
+            		print(currentTest.error + "\n");
 				print("</error>" + "\n");
 				print("</testcase>" + "\n");
             case TestStatusTypeWarningNoAssert:
@@ -86,7 +86,7 @@ class TestJUnitLogger implements unittest.TestLogger
 				if(currentTest.posInfos != null)
             		print(currentTest.posInfos.fileName+":" + currentTest.posInfos.lineNumber + ": " + currentTest.error + "\n");
             	else
-            		print(currentTest.error);
+            		print(currentTest.error + "\n");
 				print("</failure>" + "\n");
 				print("</testcase>" + "\n");
         }
