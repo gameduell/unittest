@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <library>
 
-    <duelllib name="duellkit" />
+    <duelllib name="duellkit" version="1.*.*"/>
 
-    <duelllib name="asyncrunner" />
+    <duelllib name="asyncrunner" version="1.*.*" />
+
+    <duelllib name="hxjni" version="1.*.*" if="android" />
 
     <haxelib name="msignal" />
 
     <haxelib name="polygonal-ds" />
-
-    <duelllib name="hxjni" if="android" />
 
     <platform-config>
     	<android>
