@@ -3,7 +3,7 @@
 
     <duelllib name="duellkit" version="1.*.*"/>
 
-    <duelllib name="asyncrunner" version="1.*.*" />
+    <duelllib name="runloop" version="1.*.*" />
 
     <duelllib name="hxjni" version="1.*.*" if="android" />
 

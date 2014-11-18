@@ -6,11 +6,11 @@
  */
 package unittest;
 
-import asyncrunner.DelayedTask;
 import haxe.unit.TestCase;
 
 import unittest.TestStatus;
 
+import runloop.RunLoop;
 
 class TestCase extends haxe.unit.TestCase
 {
@@ -40,7 +40,7 @@ class TestCase extends haxe.unit.TestCase
 
         testRunner.currentTestIsAsync = true;
 
-        DelayedTask.delay(function() {
+        RunLoop.getMainLoop().delay(function() {
 
             if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
                 return; /// not the current test anymore

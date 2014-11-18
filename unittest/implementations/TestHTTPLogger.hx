@@ -12,7 +12,7 @@ import unittest.TestCase;
 import unittest.TestStatus;
 import haxe.Http;
 import unittest.Utils;
-import asyncrunner.Task;
+import runloop.RunLoop;
 
 import de.polygonal.ds.LinkedQueue;
 import msignal.Signal.Signal1;
@@ -27,7 +27,7 @@ class TestHTTPLogger implements unittest.TestLogger
     private var logger : TestLogger;
     private var url : String;
 
-    private var httpMessageQueue : SequentialTaskQueue = new SequentialTaskQueue();
+    private var httpMessageQueue : HTTPMessageQueue = new HTTPMessageQueue();
 
 #if android
     static public var DEFAULT_URL = "http://10.0.2.2:8181";
@@ -72,15 +72,13 @@ class TestHTTPLogger implements unittest.TestLogger
 
     private function postTestEnded(testLogger : TestLogger)
     {
-        httpMessageQueue.queueIsEmpty.add(function(taskQueue : SequentialTaskQueue) onFinishedCallback(this));
-        var httpRequestTask = new HttpPostTask(url, "===END===");
-        httpMessageQueue.add(httpRequestTask);
+        httpMessageQueue.queueIsEmpty.add(function(taskQueue : HTTPMessageQueue) onFinishedCallback(this));
+        httpMessageQueue.add(url, "===END===");
     }
 
     private function postTestMessage(testMessage : String)
     {
-        var httpRequestTask = new HttpPostTask(url, testMessage);
-        httpMessageQueue.add(httpRequestTask);
+        httpMessageQueue.add(url, testMessage);
     }
 
     public function logStartCase(currentCase : TestCase) : Void
@@ -121,32 +119,44 @@ class TestHTTPLogger implements unittest.TestLogger
     }
 }
 
-class SequentialTaskQueue
+class HTTPMessageQueue
 {
-    var queue : LinkedQueue<Task> = new LinkedQueue<Task>();
+    var queue : LinkedQueue<URLRequest> = new LinkedQueue();
 
-    public var queueIsEmpty : Signal1<SequentialTaskQueue> = new Signal1(); 
+    public var queueIsEmpty : Signal1<HTTPMessageQueue> = new Signal1(); 
     public function new()
     {
 
     }
 
-    public function add(task : Task)
+    public function add(url : String, data : String)
     {
-        task.onFinish.add(taskFinished);
+        var urlRequest = new URLRequest(url);
+
+        urlRequest.onData = function onData(data:String):Void
+        { 
+            taskFinished();
+        };
+        urlRequest.onError = function onError(msg:String):Void
+        {
+            taskFinished();
+        };
+        urlRequest.data = data;
+
         if (queue.size() != 0)
         {
-            queue.back().onFinish.add(function(t : Task) task.execute());
-            queue.enqueue(task);
+            queue.enqueue(urlRequest);
         }
         else
         {
-            queue.enqueue(task);
-            task.execute();
+            queue.enqueue(urlRequest);
+
+            /// its the first one
+            RunLoop.getMainLoop().queue(pokeQueue, PriorityASAP);
         }
     }
 
-    public function taskFinished(task : Task)
+    private function taskFinished()
     {
         queue.dequeue();
 
@@ -154,32 +164,15 @@ class SequentialTaskQueue
         {
             queueIsEmpty.dispatch(this);
         }
-    }
-}
-
-class HttpPostTask extends Task
-{
-    public var urlRequest : URLRequest;  
-    public function new(url : String, data : String)
-    {
-        super();
-
-        urlRequest = new URLRequest(url);
-
-        urlRequest.onData = function onData(data:String):Void
-        { 
-            finishExecution();
-        };
-        urlRequest.onError = function onError(msg:String):Void
+        else
         {
-            finishExecution();
-        };
-        urlRequest.data = data;
+            RunLoop.getMainLoop().queue(pokeQueue, PriorityASAP);
+        }
     }
 
-    override function execute()
+    private function pokeQueue()
     {
-        urlRequest.send();
+        queue.peek().send();
     }
 }
 

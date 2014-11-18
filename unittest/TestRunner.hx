@@ -11,13 +11,11 @@ import unittest.TestLogger;
 import unittest.TestStatus;
 import unittest.Utils;
 
-import asyncrunner.FunctionTask;
-
 import haxe.CallStack;
 import haxe.Timer;
 import haxe.rtti.Meta;
 
-import asyncrunner.RunLoop;
+import runloop.RunLoop;
 
 import duell.DuellKit;
 
@@ -171,7 +169,7 @@ class TestRunner extends haxe.unit.TestRunner
 
     private function nextCase() : Void
     {
-        new FunctionTask(_nextCase).execute();
+        RunLoop.getMainLoop().queue(_nextCase, PriorityASAP);
     }
 
     private function _nextCase() : Void
@@ -192,7 +190,7 @@ class TestRunner extends haxe.unit.TestRunner
 
     private function nextTest() : Void
     {
-        new FunctionTask(_nextTest).execute();
+        RunLoop.getMainLoop().queue(_nextTest, PriorityASAP);
     }
 
     private function _nextTest() : Void
