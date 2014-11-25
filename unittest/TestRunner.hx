@@ -301,6 +301,8 @@ class TestRunner extends haxe.unit.TestRunner
 
             if(currentTest.success)
                 currentTest.testResultType = TestStatusTypeSuccessfulShouldFail;
+            else
+                currentTest.error = "test should have failed";
         }
 
         currentTestShouldFail = false;

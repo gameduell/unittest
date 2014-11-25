@@ -42,14 +42,13 @@ class TestCase extends haxe.unit.TestCase
 
         RunLoop.getMainLoop().delay(function() {
 
-            if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
+            if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest || testRunner == null)
                 return; /// not the current test anymore
 
             currentTest.error = "Async timeout";
             currentTest.success = false;
 
             clearAsync();
-
             testRunner.endTest(currentTest);
 
         }, timeoutInSeconds);
