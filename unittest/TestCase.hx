@@ -7,6 +7,7 @@
 package unittest;
 
 import haxe.unit.TestCase;
+import haxe.PosInfos;
 
 import unittest.TestStatus;
 
@@ -18,7 +19,9 @@ class TestCase extends haxe.unit.TestCase
     private var testRunner : unittest.TestRunner;
 
     private var currentAsyncStart : TestStatus;
-    private var currentAsyncFunction : Void -> Void;
+
+    @:allow(unittest.TestRunner)
+    private var currentFunction : Void -> Void;
 
     public function new() : Void
     {
@@ -34,7 +37,10 @@ class TestCase extends haxe.unit.TestCase
             throw "Can only have one async assert at one time";
         }
 
-        currentAsyncFunction = functionForAsyncToFinish;
+        if (currentFunction != functionForAsyncToFinish)
+        {
+            throw "assertAsyncStart function and current function mismatch";
+        }
 
         currentAsyncStart = cast currentTest;
 
@@ -42,7 +48,7 @@ class TestCase extends haxe.unit.TestCase
 
         RunLoop.getMainLoop().delay(function() {
 
-            if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest || testRunner == null)
+            if(currentFunction != functionForAsyncToFinish || currentAsyncStart != currentTest || testRunner == null)
                 return; /// not the current test anymore
 
             currentTest.error = "Async timeout";
@@ -56,7 +62,7 @@ class TestCase extends haxe.unit.TestCase
 
     public function assertAsyncFinish(functionForAsyncToFinish : Void -> Void) : Void
     {
-        if(currentAsyncFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
+        if(currentFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
         {
             return; /// timeout happened before
         }
@@ -76,7 +82,34 @@ class TestCase extends haxe.unit.TestCase
     public function clearAsync() : Void
     {
         currentAsyncStart = null;
-        currentAsyncFunction = null;
+    }
+
+    function assertAsyncTrue(functionForAsyncToFinish : Void -> Void, b:Bool, ?c : PosInfos ): Void 
+    {
+        if(currentFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
+        {
+            return; /// not this test anymore
+        }
+        super.assertTrue(b, c);
+    }
+
+    function assertAsyncFalse(functionForAsyncToFinish : Void -> Void, b:Bool, ?c : PosInfos ) : Void 
+    {
+        if(currentFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
+        {
+            return; /// not this test anymore
+        }
+        super.assertFalse(b, c);
+    }
+
+    function assertAsyncEquals<T>(functionForAsyncToFinish: Void -> Void, expected: T , actual: T,  ?c : PosInfos ) : Void  
+    {
+        if(currentFunction != functionForAsyncToFinish || currentAsyncStart != currentTest)
+        {
+            return; /// not this test anymore
+        }
+
+        super.assertEquals(expected, actual, c);
     }
 
 }
