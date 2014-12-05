@@ -232,7 +232,7 @@ class TestRunner extends haxe.unit.TestRunner
             Utils.print(p.fileName+":"+p.lineNumber+": "+str+(str.indexOf("\n") == -1 ? "\n" : ""));
         };
 
-        currentCase.currentFunction = Reflect.field(currentCase, functionName);
+        currentCase.currentFunctionName = functionName;
         Reflect.callMethod(currentCase, Reflect.field(currentCase, functionName), new Array());
 
         if(currentTestIsAsync)
@@ -304,7 +304,7 @@ class TestRunner extends haxe.unit.TestRunner
         result.add(currentCase.currentTest);
 
         currentCase.tearDown();
-        currentCase.currentFunction = null;
+        currentCase.currentFunctionName = null;
 
         currentTest = null;
 
