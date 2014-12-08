@@ -305,6 +305,7 @@ class TestRunner extends haxe.unit.TestRunner
 
         currentCase.tearDown();
         currentCase.currentFunctionName = null;
+        currentCase.currentAsyncStart = null;
 
         currentTest = null;
 

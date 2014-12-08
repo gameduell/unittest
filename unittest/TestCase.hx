@@ -18,6 +18,7 @@ class TestCase extends haxe.unit.TestCase
     @:allow(unittest.TestRunner)
     private var testRunner : unittest.TestRunner;
 
+    @:allow(unittest.TestRunner)
     private var currentAsyncStart : TestStatus;
 
     @:allow(unittest.TestRunner)
