@@ -225,33 +225,23 @@ class TestRunner extends haxe.unit.TestRunner
 
         currentTest.timeStarted = Timer.stamp();
 
-        try
+        oldTrace = haxe.Log.trace;
+        haxe.Log.trace = function customTrace( v, ?p : haxe.PosInfos )
         {
-            oldTrace = haxe.Log.trace;
-            haxe.Log.trace = function customTrace( v, ?p : haxe.PosInfos )
-            {
-                var str = Std.string(v);
-                Utils.print(p.fileName+":"+p.lineNumber+": "+str+(str.indexOf("\n") == -1 ? "\n" : ""));
-            };
+            var str = Std.string(v);
+            Utils.print(p.fileName+":"+p.lineNumber+": "+str+(str.indexOf("\n") == -1 ? "\n" : ""));
+        };
 
-            Reflect.callMethod(currentCase, Reflect.field(currentCase, functionName), new Array());
+        currentCase.currentFunctionName = functionName;
+        Reflect.callMethod(currentCase, Reflect.field(currentCase, functionName), new Array());
 
-            if(currentTestIsAsync)
-            {
-                currentTestIsAsync = false;
-            }
-            else
-            {
-                endTest();
-            }
-        }
-        catch (e : TestStatus)
+        if(currentTestIsAsync)
         {
-            endTest(e);
+            currentTestIsAsync = false;
         }
-        catch ( e : Dynamic )
-        {
-            endTest(e);
+        else
+        {   
+            endTest();
         }
     }
 
@@ -314,8 +304,11 @@ class TestRunner extends haxe.unit.TestRunner
         result.add(currentCase.currentTest);
 
         currentCase.tearDown();
+        currentCase.currentFunctionName = null;
+        currentCase.currentAsyncStart = null;
 
         currentTest = null;
+
 
         nextTest();
     }
