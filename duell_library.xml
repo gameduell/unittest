@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <library>
 
-    <duelllib name="duellkit" version="1.*.*"/>
+    <duelllib name="duellkit" version="1.2.0+"/>
 
-    <duelllib name="runloop" version="1.*.*" />
+    <duelllib name="runloop" version="1.0.0+" />
 
-    <duelllib name="hxjni" version="1.*.*" if="android" />
+    <duelllib name="hxjni" version="1.0.0+" if="android" />
 
     <haxelib name="msignal" />
 
