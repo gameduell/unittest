@@ -7,9 +7,9 @@
 
     <duelllib name="hxjni" version="1.0.0+" if="android"/>
 
-    <haxelib name="msignal" version="1.2.2" />
+    <haxelib name="msignal" />
 
-    <haxelib name="polygonal-ds" version="1.4.1" />
+    <haxelib name="polygonal-ds" />
 
     <platform-config>
     	<android>
