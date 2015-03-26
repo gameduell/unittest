@@ -9,15 +9,14 @@ package unittest;
 import unittest.TestCase;
 import unittest.TestLogger;
 import unittest.TestStatus;
-import unittest.Utils;
+
+import logger.Logger;
 
 import haxe.CallStack;
 import haxe.Timer;
 import haxe.rtti.Meta;
 
 import runloop.RunLoop;
-
-import duell.DuellKit;
 
 using Lambda;
 
@@ -141,9 +140,14 @@ class TestRunner extends haxe.unit.TestRunner
     {
         logSetup();
 
-        DuellKit.instance().onError.add(onError);
-
-        result = new TestResult();
+        try
+        {
+            result = new TestResult();
+        }
+        catch (e: Dynamic)
+        {
+            onError(e);
+        }
 
         nextCase();
 
@@ -229,7 +233,7 @@ class TestRunner extends haxe.unit.TestRunner
         haxe.Log.trace = function customTrace( v, ?p : haxe.PosInfos )
         {
             var str = Std.string(v);
-            Utils.print(p.fileName+":"+p.lineNumber+": "+str+(str.indexOf("\n") == -1 ? "\n" : ""));
+            Logger.print(p.fileName+":"+p.lineNumber+": "+str+(str.indexOf("\n") == -1 ? "\n" : ""));
         };
 
         currentCase.currentFunctionName = functionName;

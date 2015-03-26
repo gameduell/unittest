@@ -11,11 +11,12 @@ import unittest.TestResult;
 import unittest.TestCase;
 import unittest.TestStatus;
 import haxe.Http;
-import unittest.Utils;
 import runloop.RunLoop;
 
+import logger.Logger;
+
 import de.polygonal.ds.LinkedQueue;
-import msignal.Signal.Signal1;
+import msignal.Signal;
 
 #if android
 import hxjni.JNI;
@@ -115,7 +116,7 @@ class TestHTTPLogger implements unittest.TestLogger
             return;
         }
 
-        Utils.print(v);
+        Logger.print(v);
     }
 }
 

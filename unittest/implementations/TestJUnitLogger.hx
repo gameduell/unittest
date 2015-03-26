@@ -7,8 +7,9 @@
 package unittest.implementations;
 
 import haxe.Log;
+import logger.Logger;
+
 using StringTools;
-import unittest.Utils;
 
 class TestJUnitLogger implements unittest.TestLogger
 {    
@@ -106,6 +107,6 @@ class TestJUnitLogger implements unittest.TestLogger
             return;
         }
 
-        Utils.print(v);
+        Logger.print(v);
     }
 }
