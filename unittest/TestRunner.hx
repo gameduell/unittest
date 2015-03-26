@@ -140,14 +140,7 @@ class TestRunner extends haxe.unit.TestRunner
     {
         logSetup();
 
-        try
-        {
-            result = new TestResult();
-        }
-        catch (e: Dynamic)
-        {
-            onError(e);
-        }
+        result = new TestResult();
 
         nextCase();
 
@@ -201,10 +194,17 @@ class TestRunner extends haxe.unit.TestRunner
     {
         if (testIndex < currentCaseTestFunctionNames.length)
         {
-            startTest();
-
-        } else {
-
+            try
+            {
+                startTest();
+            }
+            catch (e: Dynamic)
+            {
+                onError(e);
+            }
+        }
+        else
+        {
             finishCase();
             nextCase();
         }
