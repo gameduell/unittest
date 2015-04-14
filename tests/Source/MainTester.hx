@@ -18,7 +18,6 @@ import duell.DuellKit;
 
 class MainTester
 {
-    private 
 
     static function main()
     {
@@ -27,7 +26,7 @@ class MainTester
 
     static function start() : Void
     {
-        var r = new TestRunner(testComplete);
+        var r = new TestRunner(testComplete, DuellKit.instance().onError);
         r.add(new SimpleTest());
         r.add(new AsyncTest());
 

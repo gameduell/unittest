@@ -10,6 +10,8 @@ import unittest.TestCase;
 import unittest.TestLogger;
 import unittest.TestStatus;
 
+import msignal.Signal.Signal1;
+
 import logger.Logger;
 
 import haxe.CallStack;
@@ -38,13 +40,13 @@ class TestRunner extends haxe.unit.TestRunner
     private var currentTestShouldFail : Bool;
 
     var onComplete:Void->Void;
-    
+
     var caseIndex:Int = 0;
     var testIndex:Int = 0;
 
     private var oldTrace : Dynamic;
 
-    public function new(onComplete: Void->Void) : Void
+    public function new(onComplete: Void->Void, onErrorSignal: Signal1<Dynamic>) : Void
     {
         loggerList = new Array<TestLogger>();
 
@@ -52,6 +54,8 @@ class TestRunner extends haxe.unit.TestRunner
 
         currentTestIsAsync = false;
         currentTestShouldFail = false;
+
+        onErrorSignal.add(onError);
 
         super();
     }
@@ -194,14 +198,7 @@ class TestRunner extends haxe.unit.TestRunner
     {
         if (testIndex < currentCaseTestFunctionNames.length)
         {
-            try
-            {
-                startTest();
-            }
-            catch (e: Dynamic)
-            {
-                onError(e);
-            }
+            startTest();
         }
         else
         {
@@ -244,7 +241,7 @@ class TestRunner extends haxe.unit.TestRunner
             currentTestIsAsync = false;
         }
         else
-        {   
+        {
             endTest();
         }
     }
