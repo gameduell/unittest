@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <library xmlns="duell">
 
-    <duelllib name="asyncrunner" version="1.0.0+" />
     <duelllib name="runloop" version="1.0.0+" />
     <duelllib name="logger" version="1.0.0+" />
     <duelllib name="hxjni" version="1.0.0+" if="android"/>
