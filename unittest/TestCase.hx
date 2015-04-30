@@ -16,22 +16,22 @@ import runloop.RunLoop;
 class TestCase extends haxe.unit.TestCase
 {
     @:allow(unittest.TestRunner)
-    private var testRunner : unittest.TestRunner;
+    private var testRunner: unittest.TestRunner;
 
     @:allow(unittest.TestRunner)
-    private var currentAsyncStart : TestStatus;
+    private var currentAsyncStart: TestStatus;
 
     @:allow(unittest.TestRunner)
     private var currentFunctionName: String;
 
-    public function new() : Void
+    public function new(): Void
     {
         currentAsyncStart = null;
 
         super();
     }
 
-    public function assertAsyncStart(functionNameForAsyncToFinish: String, timeoutInSeconds : Float = 1.0) : Void
+    public function assertAsyncStart(functionNameForAsyncToFinish: String, timeoutInSeconds : Float = 1.0): Void
     {
         if(currentAsyncStart != null)
         {
@@ -45,12 +45,17 @@ class TestCase extends haxe.unit.TestCase
 
         currentAsyncStart = cast currentTest;
 
+        var currentAsyncTry: Null<Int> = testRunner.currentTestAttemptsLeft;
+
         testRunner.currentTestIsAsync = true;
 
-        RunLoop.getMainLoop().delay(function() {
-
-            if(currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest || testRunner == null)
+        RunLoop.getMainLoop().delay(function()
+        {
+            if (currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest ||
+                currentAsyncTry != testRunner.currentTestAttemptsLeft || testRunner == null)
+            {
                 return; /// not the current test anymore
+            }
 
             currentTest.error = "Async timeout";
             currentTest.success = false;
@@ -61,9 +66,9 @@ class TestCase extends haxe.unit.TestCase
         }, timeoutInSeconds);
     }
 
-    public function assertAsyncFinish(functionNameForAsyncToFinish: String) : Void
+    public function assertAsyncFinish(functionNameForAsyncToFinish: String): Void
     {
-        if(currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest)
+        if (currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest)
         {
             return; /// timeout happened before
         }
@@ -75,42 +80,43 @@ class TestCase extends haxe.unit.TestCase
         testRunner.endTest();
     }
 
-    public function assertShouldFail() : Void
+    public function assertShouldFail(): Void
     {
         testRunner.currentTestShouldFail = true;
     }
 
-    public function clearAsync() : Void
+    public function clearAsync(): Void
     {
         currentAsyncStart = null;
     }
 
-    function assertAsyncTrue(functionNameForAsyncToFinish: String, b:Bool, ?c : PosInfos ): Void 
+    function assertAsyncTrue(functionNameForAsyncToFinish: String, b:Bool, ?c : PosInfos): Void
     {
-        if(currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest)
+        if (currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest || currentAsyncStart != currentTest)
         {
             return; /// not this test anymore
         }
+
         super.assertTrue(b, c);
     }
 
-    function assertAsyncFalse(functionNameForAsyncToFinish : String, b:Bool, ?c : PosInfos ) : Void 
+    function assertAsyncFalse(functionNameForAsyncToFinish : String, b:Bool, ?c : PosInfos): Void
     {
-        if(currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest)
+        if (currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest || currentAsyncStart != currentTest)
         {
             return; /// not this test anymore
         }
+
         super.assertFalse(b, c);
     }
 
-    function assertAsyncEquals<T>(functionNameForAsyncToFinish: String, expected: T , actual: T,  ?c : PosInfos ) : Void  
+    function assertAsyncEquals<T>(functionNameForAsyncToFinish: String, expected: T , actual: T,  ?c : PosInfos): Void
     {
-        if(currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest)
+        if (currentFunctionName != functionNameForAsyncToFinish || currentAsyncStart != currentTest || currentAsyncStart != currentTest)
         {
             return; /// not this test anymore
         }
 
         super.assertEquals(expected, actual, c);
     }
-
 }

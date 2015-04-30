@@ -8,17 +8,12 @@
 import unittest.implementations.TestHTTPLogger;
 import unittest.implementations.TestJUnitLogger;
 import unittest.implementations.TestSimpleLogger;
-
 import unittest.TestRunner;
-
-import SimpleTest;
-import AsyncTest;
 
 import duell.DuellKit;
 
 class MainTester
 {
-
     static function main()
     {
         DuellKit.initialize(start);
@@ -28,6 +23,7 @@ class MainTester
     {
         var r = new TestRunner(testComplete, DuellKit.instance().onError);
         r.add(new SimpleTest());
+        r.add(new FunctionalTest());
         r.add(new AsyncTest());
 
         #if test

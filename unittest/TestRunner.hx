@@ -25,19 +25,22 @@ using Lambda;
 import haxe.unit.TestRunner;
 class TestRunner extends haxe.unit.TestRunner
 {
-    private var loggerList : Array<TestLogger>;
+    private var loggerList: Array<TestLogger>;
 
-    private var currentCase : unittest.TestCase;
-    private var currentCaseClass : Dynamic;
-    private var currentTest : TestStatus;
+    private var currentCase: unittest.TestCase;
+    private var currentCaseClass: Dynamic;
+    private var currentTest: TestStatus;
 
-    private var currentCaseTestFunctionNames : Array<String>;
-
-    @:allow(unittest.TestCase)
-    private var currentTestIsAsync : Bool;
+    private var currentCaseTestFunctionNames: Array<String>;
 
     @:allow(unittest.TestCase)
-    private var currentTestShouldFail : Bool;
+    private var currentTestIsAsync: Bool;
+
+    @:allow(unittest.TestCase)
+    private var currentTestShouldFail: Bool;
+
+    @:allow(unittest.TestCase)
+    private var currentTestAttemptsLeft: Null<Int>;
 
     var onComplete:Void->Void;
 
@@ -46,7 +49,7 @@ class TestRunner extends haxe.unit.TestRunner
 
     private var oldTrace : Dynamic;
 
-    public function new(onComplete: Void->Void, onErrorSignal: Signal1<Dynamic>) : Void
+    public function new(onComplete: Void->Void, onErrorSignal: Signal1<Dynamic>): Void
     {
         loggerList = new Array<TestLogger>();
 
@@ -54,6 +57,7 @@ class TestRunner extends haxe.unit.TestRunner
 
         currentTestIsAsync = false;
         currentTestShouldFail = false;
+        currentTestAttemptsLeft = null;
 
         onErrorSignal.add(onError);
 
@@ -211,6 +215,21 @@ class TestRunner extends haxe.unit.TestRunner
     {
         var functionName = currentCaseTestFunctionNames[testIndex];
 
+        if (currentTestAttemptsLeft == null)
+        {
+            // if it is null, it is a new test, so we check to see if it has the try metatag
+            var classFields = Meta.getFields(currentCaseClass);
+            var functionFields = Reflect.field(classFields, functionName);
+
+            if (functionFields != null && Reflect.hasField(functionFields, "try"))
+            {
+                var tryTag: Array<Dynamic> = Reflect.field(functionFields, "try");
+                var tryElement: Int = tryTag[0];
+
+                currentTestAttemptsLeft = tryElement;
+            }
+        }
+
         testIndex++;
 
         currentTest = new unittest.TestStatus();
@@ -234,9 +253,10 @@ class TestRunner extends haxe.unit.TestRunner
         };
 
         currentCase.currentFunctionName = functionName;
+
         Reflect.callMethod(currentCase, Reflect.field(currentCase, functionName), new Array());
 
-        if(currentTestIsAsync)
+        if (currentTestIsAsync)
         {
             currentTestIsAsync = false;
         }
@@ -302,14 +322,34 @@ class TestRunner extends haxe.unit.TestRunner
 
         logEndTest();
 
-        result.add(currentCase.currentTest);
+        if (currentTestAttemptsLeft != null)
+        {
+            // decrement test attempts
+            currentTestAttemptsLeft--;
+
+            if (currentTestAttemptsLeft <= 0 || currentTest.success)
+            {
+                // if it succeeded or there are no more attempts left, reset the state
+                currentTestAttemptsLeft = null;
+                result.add(currentCase.currentTest);
+            }
+            else
+            {
+                // repeat the same test
+                testIndex = Std.int(Math.max(0, testIndex - 1));
+            }
+        }
+        else
+        {
+            // log result as normal
+            result.add(currentCase.currentTest);
+        }
 
         currentCase.tearDown();
         currentCase.currentFunctionName = null;
         currentCase.currentAsyncStart = null;
 
         currentTest = null;
-
 
         nextTest();
     }

@@ -5,10 +5,7 @@
  * Time: 15:13
  */
 
-import duell.DuellKit;
-
 import asyncrunner.Async;
-import asyncrunner.FunctionTask;
 
 class AsyncTest extends unittest.TestCase
 {
