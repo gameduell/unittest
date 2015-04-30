@@ -23,7 +23,7 @@ class FunctionalTest extends unittest.TestCase
     @try(4)
     public function testRandom()
     {
-        assertTrue(Math.random() > 0.4);
+        assertTrue(Math.random() > 0.3);
     }
 
     @try(5)
@@ -45,15 +45,22 @@ class FunctionalTest extends unittest.TestCase
             assertTrue(flag);
 
             assertAsyncFinish("testAsyncFailsFirstTimeWorksSecond");
-        }, 5.0);
+        }, 2.0);
 
-        assertAsyncStart("testAsyncFailsFirstTimeWorksSecond", 7.0);
+        assertAsyncStart("testAsyncFailsFirstTimeWorksSecond", 3.0);
     }
 
     @try(0)
     public function testWithZeroTries()
     {
         // should always execute once
+        assertTrue(true);
+    }
+
+    @try(-1)
+    public function testWithNegativeTries()
+    {
+        // surprise surprise, should always execute once
         assertTrue(true);
     }
 

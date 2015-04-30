@@ -13,9 +13,9 @@ class AsyncTest extends unittest.TestCase
     {
         assertEquals("string", "string");
 
-        Async.delay(function() assertAsyncFinish("test1"), 0.5);
+        Async.delay(function() assertAsyncFinish("test1"), 2.0);
 
-        assertAsyncStart("test1");
+        assertAsyncStart("test1", 3.0);
     }
 
     public function test2()
