@@ -124,7 +124,7 @@ class HTTPMessageQueue
 {
     var queue : LinkedQueue<URLRequest> = new LinkedQueue();
 
-    public var queueIsEmpty : Signal1<HTTPMessageQueue> = new Signal1(); 
+    public var queueIsEmpty : Signal1<HTTPMessageQueue> = new Signal1();
     public function new()
     {
 
@@ -135,7 +135,7 @@ class HTTPMessageQueue
         var urlRequest = new URLRequest(url);
 
         urlRequest.onData = function onData(data:String):Void
-        { 
+        {
             taskFinished();
         };
         urlRequest.onError = function onError(msg:String):Void
@@ -285,7 +285,6 @@ class URLRequest
     public var data:Dynamic;
 
     var url:String;
-    var headers:StringMap<String>;
 
     public function new(url:String)
     {
