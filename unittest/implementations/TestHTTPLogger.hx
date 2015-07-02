@@ -53,7 +53,7 @@ class TestHTTPLogger implements unittest.TestLogger
 #if android
     static public var DEFAULT_URL = "http://10.0.2.2:8181";
 #else
-    static public var DEFAULT_URL = "http://localhost:8181";
+    static public var DEFAULT_URL = "http://localhost:8182";
 #end
 
     public function new(testLogger : TestLogger, url : String = null) : Void
