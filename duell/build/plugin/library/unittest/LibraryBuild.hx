@@ -26,6 +26,11 @@
 
 package duell.build.plugin.library.unittest;
 
+import duell.helpers.TemplateHelper;
+import duell.objects.DuellLib;
+import duell.build.objects.Configuration;
+import haxe.io.Path;
+
 class LibraryBuild
 {
     public function new()

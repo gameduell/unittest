@@ -26,7 +26,12 @@
 
 package duell.build.plugin.library.unittest;
 
+import duell.build.objects.DuellProjectXML;
+import duell.build.objects.Configuration;
 import duell.build.plugin.library.unittest.LibraryConfiguration.KeyValueArray;
+import duell.helpers.XMLHelper;
+import duell.helpers.LogHelper;
+import haxe.xml.Fast;
 
 class LibraryXMLParser
 {
@@ -50,9 +55,9 @@ class LibraryXMLParser
 
     private static function parseTestPort(element : Fast)
     {
-        if (element.has.value)
+        if (element.has.port)
         {
-            LibraryConfiguration.getData().TEST_PORT = Std.parseInt(element.value);
+            LibraryConfiguration.getData().TEST_PORT = Std.parseInt(element.att.port);
         }
     }
 }
