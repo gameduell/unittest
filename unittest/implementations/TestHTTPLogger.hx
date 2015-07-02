@@ -30,6 +30,7 @@ import haxe.ds.StringMap;
 import unittest.TestResult;
 import unittest.TestCase;
 import unittest.TestStatus;
+import unittest.TestPort;
 import haxe.Http;
 import runloop.RunLoop;
 
@@ -51,9 +52,9 @@ class TestHTTPLogger implements unittest.TestLogger
     private var httpMessageQueue : HTTPMessageQueue = new HTTPMessageQueue();
 
 #if android
-    static public var DEFAULT_URL = "http://10.0.2.2:8181";
+    static public var DEFAULT_URL = "http://10.0.2.2:" + unittest.TestPort.port;
 #else
-    static public var DEFAULT_URL = "http://localhost:8181";
+    static public var DEFAULT_URL = "http://localhost:" + unittest.TestPort.port;
 #end
 
     public function new(testLogger : TestLogger, url : String = null) : Void

@@ -1,7 +1,7 @@
-package template.unittest;
+package unittest;
 
 class TestPort
 {
-    public static var testPort: Int = ::LIBRARY.UNITTEST.TEST_PORT::;
+    public static var port: Int = ::LIBRARY.UNITTEST.TEST_PORT::;
     public function new() {}
 }
