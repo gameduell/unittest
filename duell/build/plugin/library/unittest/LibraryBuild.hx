@@ -41,20 +41,16 @@ class LibraryBuild
         if (Configuration.getData().LIBRARY.UNITTEST == null)
         {
             Configuration.getData().LIBRARY.UNITTEST = LibraryConfiguration.getData();
+            // Get default configuration for test port from base module 'duell'
+            LibraryConfiguration.getData().TEST_PORT = Configuration.getData().TEST_PORT;
         }
     }
 
     public function preBuild() : Void
     {
-        // Get default configuration for test port from base module 'duell'
-        LibraryConfiguration.getData().TEST_PORT = Configuration.getData().TEST_PORT;
-
         var libPath : String = DuellLib.getDuellLib("unittest").getPath();
-
         var exportPath : String = Path.join([Configuration.getData().OUTPUT,"haxe","unittest"]);
-
         var classSourcePath : String = Path.join([libPath,"template","unittest"]);
-
         TemplateHelper.recursiveCopyTemplatedFiles(classSourcePath, exportPath, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
     }
 

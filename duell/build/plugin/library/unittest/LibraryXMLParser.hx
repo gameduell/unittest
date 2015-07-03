@@ -8,7 +8,7 @@
  * 1. Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the aboxve copyright notice,
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
@@ -47,15 +47,24 @@ class LibraryXMLParser
             {
                 case 'test-port':
                     parseTestPort(element);
+
             }
         }
     }
 
     private static function parseTestPort(element : Fast)
     {
-        if (element.has.value)
+        var testPort:Int = LibraryConfiguration.getData().TEST_PORT;
+
+        if (testPort != Configuration.getData().TEST_PORT)
         {
-            LibraryConfiguration.getData().TEST_PORT = Std.parseInt(element.att.value);
+            testPort = Configuration.getData().TEST_PORT;
         }
+        else if (element.has.value)
+        {
+            testPort = Std.parseInt(element.att.value);
+        }
+
+        LibraryConfiguration.getData().TEST_PORT = testPort;
     }
 }
