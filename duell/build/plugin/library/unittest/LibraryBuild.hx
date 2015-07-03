@@ -33,9 +33,7 @@ import haxe.io.Path;
 
 class LibraryBuild
 {
-    public function new()
-    {
-    }
+    public function new() {}
 
     public function postParse() : Void
     {
@@ -48,6 +46,9 @@ class LibraryBuild
 
     public function preBuild() : Void
     {
+        // Get default configuration for test port from base module 'duell'
+        LibraryConfiguration.getData().TEST_PORT = Configuration.getData().TEST_PORT;
+
         var libPath : String = DuellLib.getDuellLib("unittest").getPath();
 
         var exportPath : String = Path.join([Configuration.getData().OUTPUT,"haxe","unittest"]);
@@ -57,7 +58,5 @@ class LibraryBuild
         TemplateHelper.recursiveCopyTemplatedFiles(classSourcePath, exportPath, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
     }
 
-    public function postBuild() : Void
-    {
-    }
+    public function postBuild() : Void {}
 }

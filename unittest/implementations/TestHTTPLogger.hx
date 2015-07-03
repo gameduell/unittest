@@ -72,6 +72,8 @@ class TestHTTPLogger implements unittest.TestLogger
             this.url = url;
 
         logger.setLogMessageHandler(loggedMessageInterception);
+
+        trace('!!!!! Set TEST_PORT for UNITTEST to: ' + unittest.TestPort.port + ' !!!!!');
     }
 
     public function loggedMessageInterception(message : Dynamic) : Void

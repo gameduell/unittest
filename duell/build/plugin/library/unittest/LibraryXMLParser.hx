@@ -8,7 +8,7 @@
  * 1. Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * 2. Redistributions in binary form must reproduce the aboxve copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
@@ -30,7 +30,6 @@ import duell.build.objects.DuellProjectXML;
 import duell.build.objects.Configuration;
 import duell.build.plugin.library.unittest.LibraryConfiguration.KeyValueArray;
 import duell.helpers.XMLHelper;
-import duell.helpers.LogHelper;
 import haxe.xml.Fast;
 
 class LibraryXMLParser
@@ -46,18 +45,17 @@ class LibraryXMLParser
 
             switch(element.name)
             {
-                case 'testport':
+                case 'test-port':
                     parseTestPort(element);
-
             }
         }
     }
 
     private static function parseTestPort(element : Fast)
     {
-        if (element.has.port)
+        if (element.has.value)
         {
-            LibraryConfiguration.getData().TEST_PORT = Std.parseInt(element.att.port);
+            LibraryConfiguration.getData().TEST_PORT = Std.parseInt(element.att.value);
         }
     }
 }
