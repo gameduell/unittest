@@ -24,33 +24,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.haxe.duell.unittest;
+package duell.build.plugin.library.unittest;
 
-import java.io.IOException;
+import duell.build.objects.DuellProjectXML;
+import duell.build.objects.Configuration;
+import duell.build.plugin.library.unittest.LibraryConfiguration.KeyValueArray;
+import duell.helpers.XMLHelper;
+import haxe.xml.Fast;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.HttpResponse;
-import android.util.Log;
-
-public class TestHTTPLoggerPoster
+class LibraryXMLParser
 {
-	private static final String TAG = "duell";
+    public static function parse(xml : Fast) : Void
+    {
+        Configuration.getData().LIBRARY.UNITTEST = LibraryConfiguration.getData();
 
-	public static void post(String data, short port) throws IOException
-	{
-		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
+        for (element in xml.elements)
+        {
+            if (!XMLHelper.isValidElement(element, DuellProjectXML.getConfig().parsingConditions))
+                continue;
 
-		post.setEntity(new StringEntity(data));
+            switch(element.name)
+            {
+                case 'test-port':
+                    parseTestPort(element);
 
-		HttpResponse response = client.execute(post);
+            }
+        }
+    }
 
-		if (response.getStatusLine().getStatusCode() != 200)
-		{
-			Log.e(TAG, "HTTP ERROR:" + response.getStatusLine().getReasonPhrase());
-		}
-	}
+    private static function parseTestPort(element : Fast)
+    {
+        var testPort : Int = LibraryConfiguration.getData().TEST_PORT;
+        var duellToolTestPort : Int = untyped Configuration.getData().TEST_PORT == null ?
+            8181 : Configuration.getData().TEST_PORT;
+
+        if (testPort != duellToolTestPort)
+        {
+            testPort = duellToolTestPort;
+        }
+        else if (element.has.value)
+        {
+            testPort = Std.parseInt(element.att.value);
+        }
+
+        LibraryConfiguration.getData().TEST_PORT = testPort;
+    }
 }

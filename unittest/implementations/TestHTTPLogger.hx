@@ -30,6 +30,7 @@ import haxe.ds.StringMap;
 import unittest.TestResult;
 import unittest.TestCase;
 import unittest.TestStatus;
+import unittest.TestPort;
 import haxe.Http;
 import runloop.RunLoop;
 
@@ -51,9 +52,9 @@ class TestHTTPLogger implements unittest.TestLogger
     private var httpMessageQueue : HTTPMessageQueue = new HTTPMessageQueue();
 
 #if android
-    static public var DEFAULT_URL = "http://10.0.2.2:8181";
+    static public var DEFAULT_URL = "http://10.0.2.2";
 #else
-    static public var DEFAULT_URL = "http://localhost:8181";
+    static public var DEFAULT_URL = "http://localhost";
 #end
 
     public function new(testLogger : TestLogger, url : String = null) : Void
@@ -66,9 +67,13 @@ class TestHTTPLogger implements unittest.TestLogger
         }
 
         if(url == null)
-            this.url = DEFAULT_URL;
+        {
+            this.url = DEFAULT_URL + ":" + unittest.TestPort.port;
+        }
         else
+        {
             this.url = url;
+        }
 
         logger.setLogMessageHandler(loggedMessageInterception);
     }
@@ -298,7 +303,7 @@ class URLRequest
 
 #else
 
-    private var j_post = JNI.createStaticMethod("org/haxe/duell/unittest/TestHTTPLoggerPoster", "post", "(Ljava/lang/String;)V");
+    private var j_post = JNI.createStaticMethod("org/haxe/duell/unittest/TestHTTPLoggerPoster", "post", "(Ljava/lang/String;S)V");
 
     public var onData:Dynamic -> Void;
     public var onError:Dynamic ->Void;
@@ -323,7 +328,7 @@ class URLRequest
 
     public function send()
     {
-        j_post("" + data);
+        j_post("" + data, unittest.TestPort.port);
         onData("OK");
     }
 

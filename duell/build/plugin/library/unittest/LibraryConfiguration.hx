@@ -24,33 +24,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.haxe.duell.unittest;
+package duell.build.plugin.library.unittest;
 
-import java.io.IOException;
+typedef KeyValueArray = Array<{NAME : String, VALUE : String}>;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.HttpResponse;
-import android.util.Log;
+typedef LibraryConfigurationData = {
+    TEST_PORT : Int
+}
 
-public class TestHTTPLoggerPoster
+class LibraryConfiguration
 {
-	private static final String TAG = "duell";
+    public static var _configuration : LibraryConfigurationData = null;
+    private static var _parsingDefines : Array<String> = ["unittest"];
+    public static function getData() : LibraryConfigurationData
+    {
+        if (_configuration == null)
+            initConfig();
+        return _configuration;
+    }
 
-	public static void post(String data, short port) throws IOException
-	{
-		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
+    public static function getConfigParsingDefines() : Array<String>
+    {
+        return _parsingDefines;
+    }
 
-		post.setEntity(new StringEntity(data));
+    public static function addParsingDefine(str : String)
+    {
+        _parsingDefines.push(str);
+    }
 
-		HttpResponse response = client.execute(post);
+    private static function initConfig()
+    {
+        _configuration =
+        {
+            TEST_PORT : 8181
+        };
+    }
 
-		if (response.getStatusLine().getStatusCode() != 200)
-		{
-			Log.e(TAG, "HTTP ERROR:" + response.getStatusLine().getReasonPhrase());
-		}
-	}
 }
