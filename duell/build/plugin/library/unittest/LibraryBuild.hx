@@ -41,8 +41,16 @@ class LibraryBuild
         if (Configuration.getData().LIBRARY.UNITTEST == null)
         {
             Configuration.getData().LIBRARY.UNITTEST = LibraryConfiguration.getData();
-            // Get default configuration for test port from base module 'duell'
-            LibraryConfiguration.getData().TEST_PORT = Configuration.getData().TEST_PORT;
+
+            // Get default configuration for test port from base module 'duell', backward compatible
+            LibraryConfiguration.getData().TEST_PORT =
+                untyped Configuration.getData().TEST_PORT == null ? 8181 : Configuration.getData().TEST_PORT;
+        }
+
+        var haxeExtraSources = Path.join([Configuration.getData().OUTPUT, "haxe"]);
+        if (Configuration.getData().SOURCES.indexOf(haxeExtraSources) == -1)
+        {
+            Configuration.getData().SOURCES.push(haxeExtraSources);
         }
     }
 

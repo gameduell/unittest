@@ -39,10 +39,10 @@ public class TestHTTPLoggerPoster
 {
 	private static final String TAG = "duell";
 
-	public static void post(String data) throws IOException
+	public static void post(String data, short port) throws IOException
 	{
 		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://10.0.2.2:8181/");
+		HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
 
 		post.setEntity(new StringEntity(data));
 

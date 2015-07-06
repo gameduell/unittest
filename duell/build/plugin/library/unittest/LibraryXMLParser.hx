@@ -54,11 +54,13 @@ class LibraryXMLParser
 
     private static function parseTestPort(element : Fast)
     {
-        var testPort:Int = LibraryConfiguration.getData().TEST_PORT;
+        var testPort : Int = LibraryConfiguration.getData().TEST_PORT;
+        var duellToolTestPort : Int = untyped Configuration.getData().TEST_PORT == null ?
+            8181 : Configuration.getData().TEST_PORT;
 
-        if (testPort != Configuration.getData().TEST_PORT)
+        if (testPort != duellToolTestPort)
         {
-            testPort = Configuration.getData().TEST_PORT;
+            testPort = duellToolTestPort;
         }
         else if (element.has.value)
         {

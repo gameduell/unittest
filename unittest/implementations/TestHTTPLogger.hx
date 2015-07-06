@@ -67,13 +67,15 @@ class TestHTTPLogger implements unittest.TestLogger
         }
 
         if(url == null)
+        {
             this.url = DEFAULT_URL + ":" + unittest.TestPort.port;
+        }
         else
+        {
             this.url = url;
+        }
 
         logger.setLogMessageHandler(loggedMessageInterception);
-
-        trace('!!!!! Set TEST_PORT for UNITTEST to: ' + unittest.TestPort.port + ' !!!!!');
     }
 
     public function loggedMessageInterception(message : Dynamic) : Void
@@ -301,7 +303,7 @@ class URLRequest
 
 #else
 
-    private var j_post = JNI.createStaticMethod("org/haxe/duell/unittest/TestHTTPLoggerPoster", "post", "(Ljava/lang/String;)V");
+    private var j_post = JNI.createStaticMethod("org/haxe/duell/unittest/TestHTTPLoggerPoster", "post", "(Ljava/lang/String;S)V");
 
     public var onData:Dynamic -> Void;
     public var onError:Dynamic ->Void;
@@ -326,7 +328,7 @@ class URLRequest
 
     public function send()
     {
-        j_post("" + data);
+        j_post("" + data, unittest.TestPort.port);
         onData("OK");
     }
 
