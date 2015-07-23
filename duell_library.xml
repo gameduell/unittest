@@ -13,5 +13,10 @@
     		<java-source name="TestHTTPLoggerPoster" path="java" />
     		<permission name="android.permission.INTERNET" />
 		</android>
+
+        <documentation>
+            <documentation-folder library="unittest" path="documentation" />
+        </documentation>
+
 	</platform-config>
 </library>
