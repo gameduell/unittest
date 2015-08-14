@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 package unittest.implementations;
 
 import haxe.ds.StringMap;
@@ -228,7 +228,7 @@ class URLRequest
     {
         this.url = url;
         createClient(url);
-        setHeader("Content-Type", "text/plain");
+        setHeader("Content-Type", "application/json");
     }
 
     function createClient(url:String)
@@ -255,17 +255,19 @@ class URLRequest
 
     public function send()
     {
+        var dataJson = {data: Std.string(data)};
+        var jsonStr = haxe.Json.stringify(dataJson);
         #if (js || neko || cpp)
 			client.onData = onData;
 			client.onError = onError;
 			#if js
-				client.setPostData(data);
+				client.setPostData(jsonStr);
 			#else
-				client.setParameter("data", data);
+				client.setParameter("data", jsonStr);
 			#end
 			client.request(true);
 		#elseif flash9
-			client.data = data;
+			client.data = jsonStr;
 			client.method = "POST";
 			var loader = new flash.net.URLLoader();
 			loader.addEventListener(flash.events.Event.COMPLETE, internalOnData);
@@ -276,7 +278,7 @@ class URLRequest
 			var result = new flash.LoadVars();
 			result.onData = internalOnData;
 
-			client.data = data;
+			client.data = jsonStr;
 			client.sendAndLoad(url, result, "POST");
 		#end
     }
