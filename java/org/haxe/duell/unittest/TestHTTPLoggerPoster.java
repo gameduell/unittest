@@ -39,21 +39,35 @@ import android.util.Log;
 public class TestHTTPLoggerPoster
 {
 	private static final String TAG = "duell";
+	private static HttpClient client = new DefaultHttpClient();
 
-	public static void post(String data, short port) throws IOException
+	public static void post(String data, short port)
 	{
-		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
-		post.setHeader(HTTP.CONTENT_TYPE,
-                    "application/json;charset=UTF-8");
-
-		post.setEntity(new StringEntity(data));
-
-		HttpResponse response = client.execute(post);
-
-		if (response.getStatusLine().getStatusCode() != 200)
+		int tries = 3;
+		while(tries-- > 0)
 		{
-			Log.e(TAG, "HTTP ERROR:" + response.getStatusLine().getReasonPhrase());
+			try {
+				HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
+				post.setHeader("Accept", "application/json");
+				post.setHeader("Content-type", "application/json");
+
+				post.setEntity(new StringEntity(data));
+
+				HttpResponse response = client.execute(post);
+				response.getEntity().consumeContent();
+
+				if (response.getStatusLine().getStatusCode() != 200)
+				{
+					Log.e(TAG, "HTTP ERROR:" + response.getStatusLine().getReasonPhrase());
+					continue;
+				}
+			} catch(IOException except)
+			{
+				Log.e(TAG, "IOEXCEPTION:" + except);
+				continue;
+			}
+
+			tries = 0;
 		}
 	}
 }
