@@ -260,11 +260,7 @@ class URLRequest
         #if (js || neko || cpp)
 			client.onData = onData;
 			client.onError = onError;
-			#if js
-				client.setPostData(jsonStr);
-			#else
-				client.setParameter("data", jsonStr);
-			#end
+			client.setPostData(jsonStr);
 			client.request(true);
 		#elseif flash9
 			client.data = jsonStr;
