@@ -43,7 +43,7 @@ public class TestHTTPLoggerPoster
 
 	public static void post(String data, short port)
 	{
-		int tries = 3;
+		int tries = 10;
 		while(tries-- > 0)
 		{
 			try {
@@ -59,11 +59,13 @@ public class TestHTTPLoggerPoster
 				if (response.getStatusLine().getStatusCode() != 200)
 				{
 					Log.e(TAG, "HTTP ERROR:" + response.getStatusLine().getReasonPhrase());
+					android.os.SystemClock.sleep(500);
 					continue;
 				}
 			} catch(IOException except)
 			{
 				Log.e(TAG, "IOEXCEPTION:" + except);
+				android.os.SystemClock.sleep(500);
 				continue;
 			}
 
