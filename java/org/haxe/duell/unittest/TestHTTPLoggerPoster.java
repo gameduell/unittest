@@ -33,6 +33,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HTTP;
 import android.util.Log;
 
 public class TestHTTPLoggerPoster
@@ -43,6 +44,8 @@ public class TestHTTPLoggerPoster
 	{
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
+		post.setHeader(HTTP.CONTENT_TYPE,
+                    "application/json;charset=UTF-8");
 
 		post.setEntity(new StringEntity(data));
 

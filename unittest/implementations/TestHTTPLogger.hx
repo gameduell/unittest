@@ -326,7 +326,9 @@ class URLRequest
 
     public function send()
     {
-        j_post("" + data, unittest.TestPort.port);
+        var dataJson = {data: Std.string(data)};
+        var jsonStr = haxe.Json.stringify(dataJson);
+        j_post(jsonStr, unittest.TestPort.port);
         onData("OK");
     }
 
