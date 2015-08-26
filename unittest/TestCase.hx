@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 package unittest;
 
 import haxe.unit.TestCase;
@@ -32,6 +32,9 @@ import haxe.PosInfos;
 import unittest.TestStatus;
 
 import runloop.RunLoop;
+
+import org.hamcrest.Matchers;
+import org.hamcrest.Matcher;
 
 class TestCase extends haxe.unit.TestCase
 {
@@ -138,5 +141,12 @@ class TestCase extends haxe.unit.TestCase
         }
 
         super.assertEquals(expected, actual, c);
+    }
+
+    function assertThat<T>(actual:Dynamic, ?matcher:Matcher<T>, ?reason:String, ?info:PosInfos)
+    {
+        Matchers.assertThat(actual, matcher, reason, info);
+
+        assertTrue(true);
     }
 }
