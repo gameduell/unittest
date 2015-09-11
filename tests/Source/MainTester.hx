@@ -29,7 +29,7 @@ import unittest.implementations.TestJUnitLogger;
 import unittest.implementations.TestSimpleLogger;
 import unittest.TestRunner;
 
-import duell.DuellKit;
+import duellkit.DuellKit;
 
 class MainTester
 {
