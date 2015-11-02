@@ -26,20 +26,16 @@
 
 package org.haxe.duell.unittest;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.HttpResponse;
-import org.apache.http.protocol.HTTP;
 import android.util.Log;
 
 public class TestHTTPLoggerPoster
 {
 	private static final String TAG = "duell";
-	private static HttpClient client = new DefaultHttpClient();
 
 	public static void post(String data, short port)
 	{
@@ -47,21 +43,32 @@ public class TestHTTPLoggerPoster
 		while(tries-- > 0)
 		{
 			try {
-				HttpPost post = new HttpPost("http://10.0.2.2:" + port + "/");
-				post.setHeader("Accept", "application/json");
-				post.setHeader("Content-type", "application/json");
+				/// PREPARE OBJECTS
+				URL url = new URL("http://10.0.2.2:" + port + "/");
 
-				post.setEntity(new StringEntity(data));
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-				HttpResponse response = client.execute(post);
-				response.getEntity().consumeContent();
+				connection.setRequestMethod("POST");
+				connection.setRequestProperty("Accept", "application/json");
+				connection.setRequestProperty("Content-type", "application/json");
 
-				if (response.getStatusLine().getStatusCode() != 200)
-				{
-					Log.e(TAG, "HTTP ERROR:" + response.getStatusLine().getReasonPhrase());
+				connection.setDoOutput(true);
+
+				DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+				wr.write(data.getBytes());
+				wr.flush();
+				wr.close();
+
+				int statusCode = connection.getResponseCode();
+
+				if (statusCode != HttpURLConnection.HTTP_OK) {
+
+					Log.e(TAG, "HTTP ERROR:" + statusCode);
 					android.os.SystemClock.sleep(500);
 					continue;
+
 				}
+
 			} catch(IOException except)
 			{
 				Log.e(TAG, "IOEXCEPTION:" + except);
