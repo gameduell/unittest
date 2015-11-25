@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin>
+    <documentation>
+        Unittest library run plugin, allows you to run your unittests.
+    </documentation>
+
+    <arg name="-android" type="void">
+        <documentation>
+            Specifies that you want to run your tests on android.
+        </documentation>
+    </arg>
+
+	<arg name="-path" type="string">
+        <documentation>
+            Specfies the path to your apk file. By default it searches for "Export/android/bin/bin/APPLICATION_NAME-release.apk"
+        </documentation>
+    </arg>
+</plugin>
