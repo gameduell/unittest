@@ -89,6 +89,8 @@ class AndroidTestRunner extends TestingPlatformRunner
 	{
 		emulator = new Emulator(DEFAULT_ARMV7_EMULATOR, ARM);
 		emulator.start();
+
+		Sys.sleep(30);
 	}
 
 	private function waitForEmulatorReady()

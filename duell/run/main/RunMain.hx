@@ -49,9 +49,9 @@ class RunMain
 
 			platformRunner.prepareTestRun();
 
-     		// platformRunner.runTests();
+     		platformRunner.runTests();
 
-     		// platformRunner.closeTests();
+     		platformRunner.closeTests();
 		}
 		else
 		{
