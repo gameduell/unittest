@@ -1,8 +1,9 @@
 package duell.run.main.platformrunner;
 
 import duell.objects.DuellProcess;
-import duell.run.helpers.Emulator;
-
+import duell.objects.HXCPPConfigXML;
+import duell.helpers.HXCPPConfigXMLHelper;
+import duell.run.main.helpers.Emulator;
 
 import haxe.io.Path;
 
@@ -27,11 +28,52 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function runTests() : Void 
 	{
+		uninstallApp();
+		// installApp();
+		// runListener();
 	}
 
 	override public function closeTests() : Void
 	{
 		shutdownEmulator();
+	}
+
+	private function uninstallApp()
+	{
+		var hxcppConfig = HXCPPConfigXML.getConfig(HXCPPConfigXMLHelper.getProbableHXCPPConfigLocation());
+        var defines : Map<String, String> = hxcppConfig.getDefines();
+		var args = ["shell", "pm", "uninstall", config.getPackage()];
+		var adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
+
+        var adbProcess = new DuellProcess(
+        adbPath,
+        "adb",
+        args,
+        {
+        	timeout : 60,
+        	logOnlyIfVerbose : false,
+        	shutdownOnError : false,
+        	block : true,
+        	errorMessage : "uninstalling the app from the device"
+        });
+	}
+
+	private function installApp()
+	{
+		// var args = ["install", "-r", Path.join([projectDirectory, "build", "outputs", "apk", Configuration.getData().APP.FILE+ "-" + (isDebug ? "debug" : "release") + ".apk"])];
+
+  //       LogHelper.info("Installing with '" + "adb " + args.join(" ") + "'");
+  //       var adbProcess = new DuellProcess(
+  //                                       adbPath,
+  //                                       "adb",
+  //                                       args,
+  //                                       {
+  //                                           timeout : 300,
+  //                                           logOnlyIfVerbose : false,
+  //                                           shutdownOnError : true,
+  //                                           block : true,
+  //                                           errorMessage : "installing on device"
+  //                                       });
 	}
 
 	private function startEmulator()

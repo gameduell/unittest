@@ -1,5 +1,6 @@
 package duell.run.main.platformrunner;
 
+import duell.run.main.helpers.UnitTestConfig;
 import duell.helpers.PathHelper;
 import duell.helpers.LogHelper;
 import sys.FileSystem;
@@ -8,6 +9,7 @@ import haxe.io.Path;
 
 class TestingPlatformRunner implements ITestingPlatformRunner
 {
+	private var config : IUnitTestConfig;
 	private var testResultFile : String;
 	private var platform : String;
 
@@ -38,9 +40,18 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	{
 	}
 
+	private function runListener()
+	{
+	}
+
 	private function resultFileName() : String
 	{
 		return 'test_result_' + platform + '.xml';
+	}
+
+	public function setConfig(value : IUnitTestConfig)
+	{
+		config = value;
 	}
 
 }

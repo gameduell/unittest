@@ -24,7 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package duell.run.helpers;
+package duell.run.main.helpers;
 
 import duell.objects.Arguments;
 import duell.objects.HXCPPConfigXML;
@@ -40,7 +40,6 @@ enum EmulatorArchitecture
 {
 	X86;
 	ARM;
-
 	/// MIPS not supported
 }
 
