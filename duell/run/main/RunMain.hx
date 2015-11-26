@@ -2,15 +2,13 @@ package duell.run.main;
 
 
 import duell.objects.Arguments;
-
 import duell.helpers.LogHelper;
+import duell.run.main.platformrunner.ITestingPlatformRunner;
+import duell.run.main.platformrunner.AndroidTestRunner;
 
 class RunMain
 {
-	public function new()
-	{
-	}
-
+	
 	public static function main()
 	{
 		if (!Arguments.validateArguments())
@@ -21,19 +19,34 @@ class RunMain
         new RunMain().setupTests();
 	}
 
+	public function new()
+	{
+
+	}
+
 	public function setupTests()
 	{
-		specifyTestingPlatform();
-        runTests();
+		var platformRunner = specifyTestingPlatform();
+		if(platformRunner != null)
+		{
+			platformRunner.prepareTestRun();
+
+     		platformRunner.runTests();
+
+     		platformRunner.closeTests();
+		}
+		else
+		{
+			LogHelper.exitWithFormattedError("Unknown platform!");
+		}
 	}
 
-	private function specifyTestingPlatform()
+	private function specifyTestingPlatform() : ITestingPlatformRunner
 	{
-		LogHelper.info("==> " + Arguments.isSet("-path") + " " + Arguments.get("-path"));
-	}
+		if(Arguments.isSet("-android")){
+			return new AndroidTestRunner();
+		}
 
-	private function runTests()
-	{
-
+		return null;
 	}
 }
