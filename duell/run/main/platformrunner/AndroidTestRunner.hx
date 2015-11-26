@@ -3,6 +3,7 @@ package duell.run.main.platformrunner;
 import duell.objects.DuellProcess;
 import duell.objects.HXCPPConfigXML;
 import duell.helpers.HXCPPConfigXMLHelper;
+import duell.helpers.LogHelper;
 import duell.run.main.helpers.Emulator;
 
 import haxe.io.Path;
@@ -20,6 +21,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function prepareTestRun() : Void
 	{
+		LogHelper.info("...prepareTestRun...");
 		super.prepareTestRun();
 
 		startEmulator();
@@ -28,13 +30,15 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function runTests() : Void 
 	{
+		LogHelper.info("...runTests...");
 		uninstallApp();
-		// installApp();
+		installApp();
 		// runListener();
 	}
 
 	override public function closeTests() : Void
 	{
+		LogHelper.info("...closeTests...");
 		shutdownEmulator();
 	}
 
@@ -60,20 +64,25 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	private function installApp()
 	{
+		var hxcppConfig = HXCPPConfigXML.getConfig(HXCPPConfigXMLHelper.getProbableHXCPPConfigLocation());
+        var defines : Map<String, String> = hxcppConfig.getDefines();
+		var adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 		// var args = ["install", "-r", Path.join([projectDirectory, "build", "outputs", "apk", Configuration.getData().APP.FILE+ "-" + (isDebug ? "debug" : "release") + ".apk"])];
+		// /Users/clue/Developer/haXe/game_engine_tests/Export/android/engineTests/build/outputs/apk/engineTests-release.apk
+		var args = ["install", "-r", '/Users/clue/Developer/haXe/game_engine_tests/Export/android/engineTests/build/outputs/apk/engineTests-release.apk'];
 
-  //       LogHelper.info("Installing with '" + "adb " + args.join(" ") + "'");
-  //       var adbProcess = new DuellProcess(
-  //                                       adbPath,
-  //                                       "adb",
-  //                                       args,
-  //                                       {
-  //                                           timeout : 300,
-  //                                           logOnlyIfVerbose : false,
-  //                                           shutdownOnError : true,
-  //                                           block : true,
-  //                                           errorMessage : "installing on device"
-  //                                       });
+        LogHelper.info("Installing with '" + "adb " + args.join(" ") + "'");
+        var adbProcess = new DuellProcess(
+                                        adbPath,
+                                        "adb",
+                                        args,
+                                        {
+                                            timeout : 300,
+                                            logOnlyIfVerbose : false,
+                                            shutdownOnError : true,
+                                            block : true,
+                                            errorMessage : "installing on device"
+                                        });
 	}
 
 	private function startEmulator()

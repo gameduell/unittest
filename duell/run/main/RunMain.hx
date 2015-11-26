@@ -42,13 +42,16 @@ class RunMain
 		var platformRunner = specifyTestingPlatform();
 		if(platformRunner != null)
 		{
-			platformRunner.setConfig(UnitTestConfig.getConfig());
+			var config = UnitTestConfig.getConfig();
+			config.parse();
+
+			platformRunner.setConfig(config);
 
 			platformRunner.prepareTestRun();
 
-     		platformRunner.runTests();
+     		// platformRunner.runTests();
 
-     		platformRunner.closeTests();
+     		// platformRunner.closeTests();
 		}
 		else
 		{

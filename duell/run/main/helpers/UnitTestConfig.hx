@@ -53,9 +53,9 @@ typedef AppConfig = {
 class UnitTestConfig implements IUnitTestConfig
 {
 
-	private static var cache : IUnitTestConfig;
+	private static var cache : UnitTestConfig;
 
-	public static function getConfig() : IUnitTestConfig
+	public static function getConfig() : UnitTestConfig
 	{
 		if(cache == null)
 		{
