@@ -206,9 +206,6 @@ class Emulator
 			var output = proc.getCompleteStdout().toString();
 			var outputError = proc.getCompleteStderr().toString();
 
-			LogHelper.info("Emulator::output:: " + output);
-			LogHelper.info("Emulator::outputError:: " + outputError);
-
 			if (output.indexOf("1") != -1)
 			{
 				break;

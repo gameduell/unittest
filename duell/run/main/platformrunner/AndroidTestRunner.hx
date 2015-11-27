@@ -11,8 +11,10 @@ import haxe.io.Path;
 class AndroidTestRunner extends TestingPlatformRunner
 {
 
+	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
 	private static inline var DEFAULT_ARMV7_EMULATOR = "duellarmv7";
 	private var emulator : Emulator;
+	private var adbPath : String;
 
 	public function new()
 	{
@@ -24,15 +26,16 @@ class AndroidTestRunner extends TestingPlatformRunner
 		LogHelper.info("...prepareTestRun...");
 		super.prepareTestRun();
 
+		setAdbPath();
 		startEmulator();
 		waitForEmulatorReady();
+		uninstallApp();
 	}
 
 	override public function runTests() : Void 
 	{
 		LogHelper.info("...runTests...");
-		uninstallApp();
-		installApp();
+		installAndStartApp();
 		// runListener();
 	}
 
@@ -42,12 +45,16 @@ class AndroidTestRunner extends TestingPlatformRunner
 		shutdownEmulator();
 	}
 
-	private function uninstallApp()
+	private function setAdbPath()
 	{
 		var hxcppConfig = HXCPPConfigXML.getConfig(HXCPPConfigXMLHelper.getProbableHXCPPConfigLocation());
         var defines : Map<String, String> = hxcppConfig.getDefines();
+        adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
+	}
+
+	private function uninstallApp()
+	{
 		var args = ["shell", "pm", "uninstall", config.getPackage()];
-		var adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 
         var adbProcess = new DuellProcess(
         adbPath,
@@ -62,11 +69,8 @@ class AndroidTestRunner extends TestingPlatformRunner
         });
 	}
 
-	private function installApp()
+	private function installAndStartApp()
 	{
-		var hxcppConfig = HXCPPConfigXML.getConfig(HXCPPConfigXMLHelper.getProbableHXCPPConfigLocation());
-        var defines : Map<String, String> = hxcppConfig.getDefines();
-		var adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 		// var args = ["install", "-r", Path.join([projectDirectory, "build", "outputs", "apk", Configuration.getData().APP.FILE+ "-" + (isDebug ? "debug" : "release") + ".apk"])];
 		// /Users/clue/Developer/haXe/game_engine_tests/Export/android/engineTests/build/outputs/apk/engineTests-release.apk
 		
@@ -85,14 +89,38 @@ class AndroidTestRunner extends TestingPlatformRunner
                                             block : true,
                                             errorMessage : "installing on device"
                                         });
+
+       	duell.helpers.ThreadHelper.runInAThread(function()
+            {
+                Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
+                runActivity();
+            }
+        );
 	}
+
+	private function runActivity()
+    {
+        var args = ["shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", config.getPackage() + "/" + config.getPackage() + "." + "MainActivity"];
+
+        var adbProcess = new DuellProcess(
+                                        adbPath,
+                                        "adb",
+                                        args,
+                                        {
+                                            timeout : 60,
+                                            logOnlyIfVerbose : false,
+                                            shutdownOnError : true,
+                                            block : true,
+                                            errorMessage : "running the app on the device"
+                                        });
+    }
 
 	private function startEmulator()
 	{
 		emulator = new Emulator(DEFAULT_ARMV7_EMULATOR, ARM);
 		emulator.start();
 
-		Sys.sleep(30);
+		// Sys.sleep(10);
 	}
 
 	private function waitForEmulatorReady()
