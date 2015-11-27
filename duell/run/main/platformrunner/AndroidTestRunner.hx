@@ -23,7 +23,6 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function prepareTestRun() : Void
 	{
-		LogHelper.info("...prepareTestRun...");
 		super.prepareTestRun();
 
 		setAdbPath();
@@ -34,13 +33,11 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function runTests() : Void 
 	{
-		LogHelper.info("...runTests...");
 		installAndStartApp();
 	}
 
 	override public function closeTests() : Void
 	{
-		LogHelper.info("...closeTests...");
 		shutdownEmulator();
 	}
 

@@ -195,7 +195,10 @@ class Emulator
 				throw "time out connecting to the emulator";
 			}
 
-			LogHelper.info("Trying to connect to the emulator...");
+			if(alreadyConnected)
+				LogHelper.info("Booting the emulator...");
+			else
+				LogHelper.info("Trying to connect to the emulator...");
 
 			if (!alreadyConnected)
 			{
