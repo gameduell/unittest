@@ -1,0 +1,6 @@
+launch
+::PATH::
+--devicetypeid
+com.apple.CoreSimulator.SimDeviceType.iPhone-4s, 9.0
+--timeout
+300

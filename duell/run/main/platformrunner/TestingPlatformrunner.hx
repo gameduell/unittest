@@ -4,15 +4,16 @@ import duell.run.main.helpers.UnitTestConfig;
 import duell.helpers.PathHelper;
 import duell.helpers.LogHelper;
 import duell.helpers.TestHelper;
-import sys.FileSystem;
-
 import duell.objects.Arguments;
+import duell.objects.DuellLib;
 
+import sys.FileSystem;
 import haxe.io.Path;
 
 class TestingPlatformRunner implements ITestingPlatformRunner
 {
 	private var config : IUnitTestConfig;
+	private var unitTestLibPath : String;
 	private var testResultFile : String;
 	private var platform : String;
 
@@ -21,6 +22,8 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 		this.platform = platform;
 		var testResultPath = Path.join([Sys.getCwd(), "Export", "unittests"]);
 		testResultFile = Path.join([testResultPath, resultFileName()]);
+
+		unitTestLibPath = DuellLib.getDuellLib('unittest').getPath();
 	}
 
 	public function prepareTestRun() : Void

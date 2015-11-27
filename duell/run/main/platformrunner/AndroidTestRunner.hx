@@ -4,6 +4,7 @@ import duell.objects.DuellProcess;
 import duell.objects.HXCPPConfigXML;
 import duell.helpers.HXCPPConfigXMLHelper;
 import duell.helpers.LogHelper;
+import duell.helpers.ThreadHelper;
 import duell.run.main.helpers.Emulator;
 
 import haxe.io.Path;
@@ -69,7 +70,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 	{
 		var args = ["install", "-r", getAppPath()];
 
-        LogHelper.info("Installing with '" + "adb " + args.join(" ") + "'");
+        //LogHelper.info("Installing with '" + "adb " + args.join(" ") + "'");
         var adbProcess = new DuellProcess(
                                         adbPath,
                                         "adb",
@@ -82,7 +83,7 @@ class AndroidTestRunner extends TestingPlatformRunner
                                             errorMessage : "installing on device"
                                         });
 
-       	duell.helpers.ThreadHelper.runInAThread(function()
+       	ThreadHelper.runInAThread(function()
             {
                 Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
                 runActivity();
