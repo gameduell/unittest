@@ -9,6 +9,7 @@ import duell.run.main.helpers.UnitTestConfig;
 import duell.run.main.platformrunner.ITestingPlatformRunner;
 import duell.run.main.platformrunner.AndroidTestRunner;
 import duell.run.main.platformrunner.IOSTestRunner;
+import duell.run.main.platformrunner.HTML5TestRunner;
 
 class RunMain
 {
@@ -29,7 +30,6 @@ class RunMain
 
 	public function new()
 	{
-
 	}
 
 	public function init()
@@ -79,6 +79,11 @@ class RunMain
 		if(Arguments.isSet("-ios"))
 		{
 			return new IOSTestRunner();
+		}
+
+		if(Arguments.isSet("-html5"))
+		{
+			return new HTML5TestRunner();
 		}
 
 		return null;
