@@ -10,6 +10,12 @@
         </documentation>
     </arg>
 
+    <arg name="-ios" type="void">
+        <documentation>
+            Specifies that you want to run your tests on ios.
+        </documentation>
+    </arg>
+
 	<arg name="-path" type="string">
         <documentation>
             Specfies the path to your apk file. By default it searches for "Export/android/bin/bin/APPLICATION_NAME-release.apk"

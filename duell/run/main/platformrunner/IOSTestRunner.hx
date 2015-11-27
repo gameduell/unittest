@@ -7,7 +7,7 @@ import duell.helpers.CommandHelper;
 import haxe.io.Path;
 import sys.io.File;
 
-class IOSTestRunner extends TestingPlatformrunner
+class IOSTestRunner extends TestingPlatformRunner
 {
 	
 	public function new()

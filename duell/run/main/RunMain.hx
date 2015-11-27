@@ -8,6 +8,7 @@ import duell.helpers.LogHelper;
 import duell.run.main.helpers.UnitTestConfig;
 import duell.run.main.platformrunner.ITestingPlatformRunner;
 import duell.run.main.platformrunner.AndroidTestRunner;
+import duell.run.main.platformrunner.IOSTestRunner;
 
 class RunMain
 {
@@ -70,8 +71,14 @@ class RunMain
 
 	private function specifyTestingPlatform() : ITestingPlatformRunner
 	{
-		if(Arguments.isSet("-android")){
+		if(Arguments.isSet("-android"))
+		{
 			return new AndroidTestRunner();
+		}
+		
+		if(Arguments.isSet("-ios"))
+		{
+			return new IOSTestRunner();
 		}
 
 		return null;
