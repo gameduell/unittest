@@ -4,6 +4,7 @@ import duell.objects.DuellProcess;
 import duell.objects.HXCPPConfigXML;
 import duell.helpers.HXCPPConfigXMLHelper;
 import duell.helpers.LogHelper;
+import duell.helpers.TestHelper;
 import duell.run.main.helpers.Emulator;
 
 import haxe.io.Path;
@@ -14,6 +15,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
 	private static inline var DEFAULT_ARMV7_EMULATOR = "duellarmv7";
 	private var emulator : Emulator;
+	// private var logcatProcess: DuellProcess = null; /// will block here if emulator is not running.
 	private var adbPath : String;
 
 	public function new()
@@ -36,7 +38,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 	{
 		LogHelper.info("...runTests...");
 		installAndStartApp();
-		// runListener();
+		// runLogcat();
 	}
 
 	override public function closeTests() : Void
@@ -96,6 +98,12 @@ class AndroidTestRunner extends TestingPlatformRunner
                 runActivity();
             }
         );
+
+        var testPort:Int = 8181;//untyped Configuration.getData().TEST_PORT == null ?
+            // 8181 : Configuration.getData().TEST_PORT;
+
+        /// RUN THE LISTENER
+        TestHelper.runListenerServer(300, testPort, testResultFile);
 	}
 
 	private function runActivity()
@@ -114,6 +122,35 @@ class AndroidTestRunner extends TestingPlatformRunner
                                             errorMessage : "running the app on the device"
                                         });
     }
+
+    // private function runLogcat()
+    // {
+    //     var args = ["logcat"];
+
+
+        // if (!isFullLogcat)
+        // {
+        //     var filter = "*:E";
+        //     var includeTags = ["duell", "Main", "DuellActivity", "GLThread", "trace"];
+
+        //     for (tag in includeTags)
+        //     {
+        //         filter += " " + tag + ":D";
+        //     }
+        //     args = args.concat([filter]);
+        // }
+
+
+    //     logcatProcess = new DuellProcess(
+    //                                     adbPath,
+    //                                     "adb",
+    //                                     args,
+    //                                     {
+    //                                         logOnlyIfVerbose : false,
+    //                                         loggingPrefix: "[LOGCAT]",
+    //                                         errorMessage : "running logcat"
+    //                                     });
+    // }
 
 	private function startEmulator()
 	{
