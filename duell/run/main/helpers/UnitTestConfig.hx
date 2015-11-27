@@ -50,6 +50,11 @@ typedef AppConfig = {
 	buildNumber : String
 }
 
+typedef WinConfig = {
+	width : String,
+	height : String
+}
+
 class UnitTestConfig implements IUnitTestConfig
 {
 
@@ -67,9 +72,12 @@ class UnitTestConfig implements IUnitTestConfig
 	}
 
 	private var appConfig : AppConfig;
+	private var winConfig : WinConfig;
 
 	private function new() : Void
 	{
+		appConfig = {title : '',file : '', classpath : '', version : '', company : '', buildNumber : ''};
+		winConfig = {width : "0", height : "0"};
 	}
 
 	public function parse()
@@ -99,15 +107,27 @@ class UnitTestConfig implements IUnitTestConfig
 
 				case 'output':
 					parseOutputElement(element);
+
+				case "win-size":
+					parseWinSizeElement(element);
 			}
 		}
 	}
 
+	private function parseWinSizeElement(element : Fast) : Void
+	{
+	    if(element.has.width)
+	    {
+	    	winConfig.width = element.att.width;
+	    }
+	    if(element.has.height)
+	    {
+	    	winConfig.height = element.att.height;
+	    }
+	}
+
 	private function parseAppElement(element : Fast)
 	{
-		if(appConfig == null )
-			appConfig = {title : '',file : '', classpath : '', version : '', company : '', buildNumber : ''};
-
 		if (element.has.title)
 		{
 			appConfig.title = element.att.title;
@@ -196,5 +216,15 @@ class UnitTestConfig implements IUnitTestConfig
 	public function getFile() : String
 	{
 		return appConfig != null ? appConfig.file : '';
+	}
+
+	public function winHeight() : String
+	{
+		return winConfig.height;
+	}
+
+	public function winWidth() : String
+	{
+		return winConfig.width;
 	}
 }

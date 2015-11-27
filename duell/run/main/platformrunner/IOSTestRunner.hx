@@ -33,7 +33,7 @@ class IOSTestRunner extends TestingPlatformRunner
 
 		if(Arguments.isSet('-simulator'))
 		{
-			var launcher = Path.join([unitTestLibPath , "bin", "ios-sim"]);
+			var launcher = Path.join([unitTestLibPath , "bin", platform, "ios-sim"]);
 			CommandHelper.runCommand("", "chmod", ["+x", launcher], {errorMessage: "setting permissions on the simulator launcher"});
 
 			var launcherPath = Path.directory(launcher);
@@ -41,7 +41,7 @@ class IOSTestRunner extends TestingPlatformRunner
 		}
 		else
 		{
-			var launcher = Path.join([unitTestLibPath , "bin", "ios-deploy"]);
+			var launcher = Path.join([unitTestLibPath , "bin", platform, "ios-deploy"]);
 			CommandHelper.runCommand("", "chmod", ["+x", launcher], {errorMessage: "setting permission on the ios deploy tool"});
 
 			CommandHelper.runCommand("", launcher, args, {errorMessage: "deploying the app into the device"});
