@@ -16,6 +16,12 @@
         </documentation>
     </arg>
 
+    <arg name="-port" type="int">
+        <documentation>
+            Define a port number to be used by unittest.TestHTTPLogger and Python test result listener.
+        </documentation>
+    </arg>
+
     <arg name="-wipeemulator" type="void">
         <documentation>
             Use this if you want to wipe the user data with the start of the emulator.

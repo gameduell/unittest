@@ -19,6 +19,10 @@ class RunMain
             return;
         }
 
+        if(!Arguments.isSet("-path")){
+        	LogHelper.exitWithFormattedError("Use '-path' to define the path to your unittest project compilation.");
+        }
+
         new RunMain().init();
 	}
 

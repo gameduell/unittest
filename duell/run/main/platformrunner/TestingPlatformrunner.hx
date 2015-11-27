@@ -3,7 +3,10 @@ package duell.run.main.platformrunner;
 import duell.run.main.helpers.UnitTestConfig;
 import duell.helpers.PathHelper;
 import duell.helpers.LogHelper;
+import duell.helpers.TestHelper;
 import sys.FileSystem;
+
+import duell.objects.Arguments;
 
 import haxe.io.Path;
 
@@ -32,6 +35,14 @@ class TestingPlatformRunner implements ITestingPlatformRunner
         PathHelper.mkdir(Path.directory(testResultFile));
 	}
 
+	private function runListener()
+	{
+		var testPort : Int = Arguments.isSet("-port") ? Arguments.get("-port") : 8181;
+
+        /// RUN THE LISTENER
+        TestHelper.runListenerServer(300, testPort, testResultFile);
+	}
+
 	public function runTests() : Void 
 	{	
 	}
@@ -40,9 +51,11 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	{
 	}
 
-	private function runListener()
+	private function getAppPath() : String
 	{
+		return Arguments.get("-path");
 	}
+
 
 	private function resultFileName() : String
 	{
