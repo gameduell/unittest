@@ -69,6 +69,8 @@ class AndroidTestRunner extends TestingPlatformRunner
 		var adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 		// var args = ["install", "-r", Path.join([projectDirectory, "build", "outputs", "apk", Configuration.getData().APP.FILE+ "-" + (isDebug ? "debug" : "release") + ".apk"])];
 		// /Users/clue/Developer/haXe/game_engine_tests/Export/android/engineTests/build/outputs/apk/engineTests-release.apk
+		
+		//TODO clue
 		var args = ["install", "-r", '/Users/clue/Developer/haXe/game_engine_tests/Export/android/engineTests/build/outputs/apk/engineTests-release.apk'];
 
         LogHelper.info("Installing with '" + "adb " + args.join(" ") + "'");
