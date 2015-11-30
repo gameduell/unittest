@@ -69,10 +69,10 @@ class Emulator
 		emulatorPath = Path.join([defines.get("ANDROID_SDK"), "tools"]);
 	}
 
-	public function start(): Void
+	public function start( ?args : Array<String> ): Void
 	{
 		portToUse = 5554 + Std.random(125);
-
+		// portToUse = 5600;
 		if (portToUse % 2 > 0)
 		{
 			portToUse += 1;
@@ -80,12 +80,15 @@ class Emulator
 
 		adbKillStartServer();
 
-		var args = ["-avd", emulatorName,
+		var args = args != null ? args : 
+					["-avd", emulatorName,
 					"-prop", "persist.sys.language=en",
 					"-prop", "persist.sys.country=GB",
 					"-port", "" + portToUse,
 					"-no-snapshot-load", "-no-snapshot-save",
-					"-gpu", "on", "-noaudio"];
+					"-gpu", "on", "-noaudio",
+					"-netspeed", "full", "-netdelay", "none"];
+					// "-no-window", "-no-skin"];
 
 		if (Arguments.isSet("-wipeemulator"))
 		{

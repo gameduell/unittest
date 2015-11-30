@@ -45,4 +45,22 @@
             Use this if you want to wipe the user data with the start of the emulator.
         </documentation>
     </arg>
+
+    <arg name="-x86" type="void">
+        <documentation>
+            Use this argument if you want to build specifically for x86 platforms. Default will be armv7.
+        </documentation>
+    </arg>
+
+    <arg name="-armv6" type="void">
+        <documentation>
+            Use this if you want to build for armv6. Default will be armv7.
+        </documentation>
+    </arg>
+
+    <arg name="-armv7" type="void">
+        <documentation>
+            Use this if you want to build for armv7. If you don't specify a platform, this will be default.
+        </documentation>
+    </arg>
 </plugin>

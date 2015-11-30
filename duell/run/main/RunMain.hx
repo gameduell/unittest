@@ -11,11 +11,15 @@ import duell.run.main.platformrunner.AndroidTestRunner;
 import duell.run.main.platformrunner.IOSTestRunner;
 import duell.run.main.platformrunner.HTML5TestRunner;
 
+import haxe.Timer;
+
 class RunMain
 {
 	
 	public static function main()
 	{
+		var stamp : Float = Timer.stamp();
+
 		if (!Arguments.validateArguments())
         {
             return;
@@ -26,6 +30,10 @@ class RunMain
         }
 
         new RunMain().init();
+
+        stamp = Timer.stamp() - stamp;
+
+        LogHelper.info("USED TIME: " + stamp + " sec");
 	}
 
 	public function new()
