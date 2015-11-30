@@ -2,6 +2,7 @@ package duell.run.main.platformrunner;
 
 import duell.objects.DuellProcess;
 import duell.objects.Server;
+import duell.objects.Arguments;
 import duell.helpers.PlatformHelper;
 import duell.helpers.ThreadHelper;
 import duell.helpers.CommandHelper;
@@ -23,6 +24,8 @@ class HTML5TestRunner extends TestingPlatformRunner
 
 	override public function runTests() : Void 
 	{
+		startHTTPServer();
+
 		/// RUN THE APP IN A THREAD
 		var targetTime = haxe.Timer.stamp() + DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP;
 		ThreadHelper.runInAThread(function()
@@ -42,6 +45,14 @@ class HTML5TestRunner extends TestingPlatformRunner
 
 			throw e;
 		}
+	}
+
+	private function startHTTPServer()
+	{
+		var serverTargetDirectory : String  = Arguments.get('-path');
+		
+ 		server = new Server(serverTargetDirectory, -1, 3000);
+        server.start();
 	}
 
 	//runs in slimerJS only
@@ -67,9 +78,9 @@ class HTML5TestRunner extends TestingPlatformRunner
  			xulrunnerCommand = "xulrunner.exe";
  		}
 		
-		xulrunnerFolder = Path.join([unitTestLibPath,"bin",slimerFolder,"xulrunner"]);
-		var appPath = Path.join([unitTestLibPath, "bin", slimerFolder, "application.ini"]);
-	    var scriptPath = Path.join([unitTestLibPath, "bin", "application.js"]);
+		xulrunnerFolder = Path.join([unitTestLibPath,"bin", platform, slimerFolder,"xulrunner"]);
+		var appPath = Path.join([unitTestLibPath, "bin", platform, slimerFolder, "application.ini"]);
+	    var scriptPath = Path.join([unitTestLibPath, "bin", platform, "application.js"]);
 
 		if (PlatformHelper.hostPlatform != WINDOWS)
 		{
