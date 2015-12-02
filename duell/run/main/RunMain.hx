@@ -2,9 +2,11 @@ package duell.run.main;
 
 import sys.FileSystem;
 
+import duell.objects.DuellProcess;
 import duell.defines.DuellDefines;
 import duell.objects.Arguments;
 import duell.helpers.LogHelper;
+import duell.run.main.helpers.Devices;
 import duell.run.main.helpers.UnitTestConfig;
 import duell.run.main.platformrunner.ITestingPlatformRunner;
 import duell.run.main.platformrunner.AndroidTestRunner;
@@ -24,6 +26,8 @@ class RunMain
         {
             return;
         }
+        
+        Devices.setup();
 
         if(!Arguments.isSet("-path")){
         	LogHelper.exitWithFormattedError("Use '-path' to define the path to your unittest project compilation.");

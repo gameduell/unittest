@@ -71,14 +71,8 @@ class Emulator
 
 	public function start( ?args : Array<String> ): Void
 	{
-		// if(Arguments.isSet('-keepEmulatorProcess'))
-		// {
-		// 	portToUse = 5600;
-		// }
-		// else
-		// {
-			portToUse = 5554 + Std.random(125);
-		// }
+		
+		portToUse = 5554 + Std.random(125);
 		
 		if (portToUse % 2 > 0)
 		{
