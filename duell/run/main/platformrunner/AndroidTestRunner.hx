@@ -44,7 +44,10 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function closeTests() : Void
 	{
-		shutdownEmulator();
+        if(!Arguments.isSet('-keepEmulatorProcess'))
+        {
+            shutdownEmulator();
+        } 
 	}
 
 	private function setAdbPath()

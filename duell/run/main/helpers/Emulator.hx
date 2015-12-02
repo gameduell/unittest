@@ -71,8 +71,15 @@ class Emulator
 
 	public function start( ?args : Array<String> ): Void
 	{
-		portToUse = 5554 + Std.random(125);
-		// portToUse = 5600;
+		// if(Arguments.isSet('-keepEmulatorProcess'))
+		// {
+		// 	portToUse = 5600;
+		// }
+		// else
+		// {
+			portToUse = 5554 + Std.random(125);
+		// }
+		
 		if (portToUse % 2 > 0)
 		{
 			portToUse += 1;
@@ -87,8 +94,7 @@ class Emulator
 					"-port", "" + portToUse,
 					"-no-snapshot-load", "-no-snapshot-save",
 					"-gpu", "on", "-noaudio",
-					"-netspeed", "full", "-netdelay", "none"];
-					// "-no-window", "-no-skin"];
+					"-no-window", "-no-skin"];
 
 		if (Arguments.isSet("-wipeemulator"))
 		{
