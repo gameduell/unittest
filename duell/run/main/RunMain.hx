@@ -26,8 +26,6 @@ class RunMain
         {
             return;
         }
-        
-        Devices.setup();
 
         if(!Arguments.isSet("-path")){
         	LogHelper.exitWithFormattedError("Use '-path' to define the path to your unittest project compilation.");

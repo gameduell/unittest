@@ -44,9 +44,13 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function closeTests() : Void
 	{
-        if(!Arguments.isSet('-keepEmulatorProcess'))
+        // if(!Arguments.isSet('-keepEmulatorProcess'))
+        // {
+        //     shutdownEmulator();
+        // }
+        if(emulator != null)
         {
-            shutdownEmulator();
+            emulator.stopDevice();
         } 
 	}
 
@@ -81,7 +85,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	private function uninstallApp()
 	{
-		var args = ["shell", "pm", "uninstall", config.getPackage()];
+		var args = ["-s", emulator.getDeviceName(), "shell", "pm", "uninstall", config.getPackage()];
 
         var adbProcess = new DuellProcess(
         adbPath,
@@ -98,7 +102,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	private function installAndStartApp()
 	{
-		var args = ["install", "-r", getAppPath()];
+		var args = ["-s", emulator.getDeviceName(), "install", "-r", getAppPath()];
 
         var adbProcess = new DuellProcess(
                                         adbPath,
@@ -124,7 +128,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	private function runActivity()
     {
-        var args = ["shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", config.getPackage() + "/" + config.getPackage() + "." + "MainActivity"];
+        var args = ["-s", emulator.getDeviceName(), "shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", config.getPackage() + "/" + config.getPackage() + "." + "MainActivity"];
 
         var adbProcess = new DuellProcess(
                                         adbPath,

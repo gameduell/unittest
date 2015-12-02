@@ -1,15 +1,21 @@
 package duell.run.main.helpers;
 
+import duell.run.main.helpers.Emulator;
+
 import duell.objects.HXCPPConfigXML;
 import duell.objects.DuellProcess;
 
 import duell.helpers.LogHelper;
 import duell.helpers.HXCPPConfigXMLHelper;
 
+
 import haxe.io.Path;
 
 class Devices
 {
+
+	private static inline var EMULATOR_NAME = "emulator";
+
 	private static var adbPath : String;
 	private static var devices : Array<Device>;
 
@@ -40,7 +46,37 @@ class Devices
         var output = adbProcess.getCompleteStdout().toString();
         parse(output);
 
-        LogHelper.info("found devices:\n" + devices);
+        LogHelper.info("====> found devices:\n" + devices);
+	}
+
+	public static function getDevice( arch : EmulatorArchitecture ) : Device
+	{
+		for ( d in devices )
+		{
+			if( d.arch == arch )
+				return d;
+		}
+
+		var newDevice = createNewDevice(arch);
+		devices.push(newDevice);
+
+		return newDevice;
+	}
+
+	private static function createNewDevice( arch : EmulatorArchitecture ) : Device
+	{
+		var port = 5554 + Std.random(125);
+		
+		if (port % 2 > 0)
+		{
+			port += 1;
+		}
+
+		var device = new Device();
+		device.port = Std.string(port);
+		device.arch = arch;
+
+		return device;
 	}
 
 	private static function parse( list:String )
@@ -56,7 +92,7 @@ class Devices
 			if(i == 0 || row.length == 0) // headline or empty row
 				continue;
 
-			var device = getDevice(row);
+			var device = getExistingDevice(row);
 			if(device != null)
 			{
 				devices.push(device);
@@ -64,7 +100,7 @@ class Devices
 		}
 	}
 
-	private static function getDevice( entry:String ) : Device
+	private static function getExistingDevice( entry:String ) : Device
 	{
 		var raw = unifyDeviceEntry(entry);
 		var parts = raw.split(" ");
@@ -72,27 +108,26 @@ class Devices
 
 		if(parts.length >= 2)
 		{
-			device = new Device(parts[0], parts[1]);
+			device = new Device();
+			device.parseName(parts[0]);
+			device.setDeviceState(parts[1]);
 		}
 
-		if(device == null || !validDevice(device))
+		if(device == null /*|| !validDevice(device)*/)
 			return null;
 
 		return device;
 	}
 
+	/**
+	 * function validDevice
+	 * Checks if the parameters of the Device object are valid.
+	 *
+	 * @param device Device
+	**/
 	private static function validDevice( device:Device ) : Bool
 	{
-		if(device == null)
-			return false;
-
-		if(device.name.charAt(0) == '*')
-			return false;
-
-		if(device.name.length == 0 || device.state.length == 0)
-			return false;
-
-		return true;
+		return device.isComplete();
 	}
 
 	/**
@@ -107,30 +142,5 @@ class Devices
 		var regEx = ~/\s/g;
 
 		return regEx.replace(entry, ' ');
-	}
-}
-
-
-class Device
-{
-	private static inline var STATE_ONLINE = 'device';
-
-	public var name(default, null) : String;
-	public var state(default, null) : String;
-
-	public function new( name:String, state:String )
-	{
-		this.name = name;
-		this.state = state;
-	}
-
-	public function isOnline() : Bool
-	{
-		return state == STATE_ONLINE;
-	}
-
-	public function toString() : String
-	{
-		return "Device name:" + name + " state:" + state;
 	}
 }

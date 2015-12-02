@@ -36,6 +36,7 @@ import duell.helpers.HXCPPConfigXMLHelper;
 import duell.helpers.CommandHelper;
 
 import haxe.io.Path;
+
 enum EmulatorArchitecture
 {
 	X86;
@@ -53,10 +54,12 @@ class Emulator
 
 	private var emulatorProcess: DuellProcess;
 
-	private var portToUse: Int = 0;
+	// private var portToUse: Int = 0;
 
 	private var adbPath: String;
 	private var emulatorPath: String;
+	// public var deviceName(default, null) : String;
+	private var device : Device;
 
 	public function new(emulatorName: String, emulatorArchitecture: EmulatorArchitecture = null): Void
 	{
@@ -67,17 +70,27 @@ class Emulator
 		var defines : Map<String, String> = hxcppConfig.getDefines();
 		adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 		emulatorPath = Path.join([defines.get("ANDROID_SDK"), "tools"]);
+
+		Devices.setup();
 	}
 
 	public function start( ?args : Array<String> ): Void
 	{
+		device = Devices.getDevice(emulatorArchitecture);
+		LogHelper.info("==> Emulator, device: " + device);
+
+		if(device.isOnline())
+			startDevice();
+
+			return;
+		// portToUse = 5554 + Std.random(125);
 		
-		portToUse = 5554 + Std.random(125);
-		
-		if (portToUse % 2 > 0)
-		{
-			portToUse += 1;
-		}
+		// if (portToUse % 2 > 0)
+		// {
+		// 	portToUse += 1;
+		// }
+
+		// deviceName = "emulator-" + emulatorArchitecture + "-" + portToUse;
 
 		adbKillStartServer();
 
@@ -85,7 +98,7 @@ class Emulator
 					["-avd", emulatorName,
 					"-prop", "persist.sys.language=en",
 					"-prop", "persist.sys.country=GB",
-					"-port", "" + portToUse,
+					"-port", "" + device.port,
 					"-no-snapshot-load", "-no-snapshot-save",
 					"-gpu", "on", "-noaudio",
 					"-no-window", "-no-skin"];
@@ -129,6 +142,26 @@ class Emulator
 										});
 	}
 
+	private function startDevice()
+	{
+		LogHelper.info("===> starting device");
+		var argsStart = ["-s", device.getName(), "shell", "start"];
+
+		new DuellProcess(
+						adbPath,
+						"adb",
+						argsStart,
+						{
+							timeout : 0,
+							logOnlyIfVerbose : true,
+							loggingPrefix : "[ADB]",
+							shutdownOnError : false,
+							block : true,
+							errorMessage : "starting device",
+							systemCommand: false
+						});
+	}
+
 	private function adbKillStartServer(): Void
 	{
 		var adbKillServer = new DuellProcess(
@@ -160,6 +193,26 @@ class Emulator
 							});
 	}
 
+	public function stopDevice()
+	{
+		LogHelper.info("===> stopping device");
+		var argsStop = ["-s", device.getName(), "shell", "stop"];
+
+		new DuellProcess(
+						adbPath,
+						"adb",
+						argsStop,
+						{
+							timeout : 0,
+							logOnlyIfVerbose : true,
+							loggingPrefix : "[ADB]",
+							shutdownOnError : false,
+							block : true,
+							errorMessage : "stopping device",
+							systemCommand: false
+						});
+	}
+
 	public function shutdown(): Void
 	{
 		if (emulatorProcess != null)
@@ -171,8 +224,8 @@ class Emulator
 
 		var timeStarted = haxe.Timer.stamp();
 
-		var argsConnect = ["connect", "localhost:" + portToUse];
-		var argsBoot = ["-s", "emulator-" + portToUse, "shell", "getprop", "dev.bootcomplete"];
+		var argsConnect = ["connect", "localhost:" + device.port];
+		var argsBoot = ["-s", device.getName(), "shell", "getprop", "dev.bootcomplete"];
 
 		var opts = {
 			timeout : 0.0,
@@ -238,5 +291,10 @@ class Emulator
 	public function waitUntilFinished(): Void
 	{
 		emulatorProcess.blockUntilFinished();
+	}
+
+	public function getDeviceName() : String
+	{
+		return device != null ? device.getName() : "unknown";
 	}
 }
