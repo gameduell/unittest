@@ -49,21 +49,20 @@ class Devices
         LogHelper.info("====> found devices:\n" + devices);
 	}
 
-	public static function getDevice( arch : EmulatorArchitecture ) : Device
+	public static function getDevice() : Device
 	{
 		for ( d in devices )
 		{
-			if( d.arch == arch )
-				return d;
+			return d;
 		}
 
-		var newDevice = createNewDevice(arch);
+		var newDevice = createNewDevice();
 		devices.push(newDevice);
 
 		return newDevice;
 	}
 
-	private static function createNewDevice( arch : EmulatorArchitecture ) : Device
+	private static function createNewDevice() : Device
 	{
 		var port = 5554 + Std.random(125);
 		
@@ -74,7 +73,6 @@ class Devices
 
 		var device = new Device();
 		device.port = Std.string(port);
-		device.arch = arch;
 
 		return device;
 	}
@@ -113,7 +111,7 @@ class Devices
 			device.setDeviceState(parts[1]);
 		}
 
-		if(device == null /*|| !validDevice(device)*/)
+		if(device == null || !validDevice(device))
 			return null;
 
 		return device;

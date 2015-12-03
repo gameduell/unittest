@@ -76,13 +76,15 @@ class Emulator
 
 	public function start( ?args : Array<String> ): Void
 	{
-		device = Devices.getDevice(emulatorArchitecture);
+		device = Devices.getDevice();
 		LogHelper.info("==> Emulator, device: " + device);
 
 		if(device.isOnline())
-			startDevice();
+		{
+			// startDevice();
 
 			return;
+		}
 		// portToUse = 5554 + Std.random(125);
 		
 		// if (portToUse % 2 > 0)
@@ -92,7 +94,7 @@ class Emulator
 
 		// deviceName = "emulator-" + emulatorArchitecture + "-" + portToUse;
 
-		adbKillStartServer();
+		// adbKillStartServer();
 
 		var args = args != null ? args : 
 					["-avd", emulatorName,
@@ -145,7 +147,7 @@ class Emulator
 	private function startDevice()
 	{
 		LogHelper.info("===> starting device");
-		var argsStart = ["-s", device.getName(), "shell", "start"];
+		var argsStart = ["-s", device.getName(), "shell", "start", "-W"];
 
 		new DuellProcess(
 						adbPath,

@@ -1,7 +1,5 @@
 package duell.run.main.helpers;
 
-import duell.run.main.helpers.Emulator;
-
 enum DeviceState {
 	OFFLINE;
 	ONLINE;
@@ -13,7 +11,6 @@ class Device
 {
 	private static inline var DELIMETER = "-";
 
-	public var arch(default, default) : EmulatorArchitecture;
 	public var port(default, default) : String;
 	public var state(default, default) : DeviceState = OFFLINE;
 
@@ -24,7 +21,7 @@ class Device
 
 	public function getName() : String
 	{
-		return "emulator" + DELIMETER + arch + DELIMETER + port;
+		return "emulator" + DELIMETER + port;
 	}
 
 	public function parseName( name : String )
@@ -33,24 +30,12 @@ class Device
 			return;
 
 		var parts = name.split(DELIMETER);
-		arch = parts.length >= 2 ? getArchitecture(parts[1]) : null;
-		port = parts.length >= 3 ? parts[2] : null;
+		port = parts.length >= 2 ? parts[1] : null;
 	}
 
 	public function setDeviceState( state : String )
 	{
 		this.state = getDeviceState(state);
-	}
-
-	private function getArchitecture( value:String ) : EmulatorArchitecture
-	{
-		switch(value)
-		{
-			case 'ARM' : return ARM;
-			case 'X86' : return X86;
-		}
-
-		return null;
 	}
 
 	private function getDeviceState( value : String ) : DeviceState
@@ -70,11 +55,11 @@ class Device
 
 	public function isComplete() : Bool
 	{
-		return arch != null && port != null && state != null;
+		return port != null && state != null;
 	}
 
 	public function toString() : String 
 	{
-		return "Device name:" + getName() + " arch:" + arch + " port:" + port + " state:" + state;
+		return "Device name:" + getName() + " port:" + port + " state:" + state;
 	}
 }

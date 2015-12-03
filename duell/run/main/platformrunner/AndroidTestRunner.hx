@@ -48,10 +48,10 @@ class AndroidTestRunner extends TestingPlatformRunner
         // {
         //     shutdownEmulator();
         // }
-        if(emulator != null)
-        {
-            emulator.stopDevice();
-        } 
+        // if(emulator != null)
+        // {
+        //     emulator.stopDevice();
+        // } 
 	}
 
 	private function setAdbPath()
@@ -102,7 +102,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	private function installAndStartApp()
 	{
-		var args = ["-s", emulator.getDeviceName(), "install", "-r", getAppPath()];
+		var args = ["-s", emulator.getDeviceName(), "install", "-r", getAppPath(), "-netfast"];
 
         var adbProcess = new DuellProcess(
                                         adbPath,
