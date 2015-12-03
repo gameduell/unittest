@@ -41,6 +41,12 @@ class DeviceFileHelper
 		parseFile(content);
 	}
 
+	/**
+	 * function parseFile
+	 * Parses the configuration file and creates the configured/used devices.
+	 *
+	 * @param content String
+	**/
 	private function parseFile( content : String )
 	{
 		devices = new Array<Device>();
@@ -70,11 +76,21 @@ class DeviceFileHelper
 		LogHelper.info("result: " + devices);
 	}
 
+	/**
+	 * function createDeviceEntry
+	 * Based on the passed device it will create a certain entry for the configuration file.
+	 *
+	 * @param d Device 
+	**/
 	private function createDeviceEntry( d : Device ) : String 
 	{
 		return d.arch + DELIMETER + d.getName() + DELIMETER + d.pid;
 	}
 
+	/**
+	 * function writeFile
+	 * Writes the content from <br>fileContent</br> to configuration file.
+	**/
 	private function writeFile()
 	{
 		var fileOutput = File.write(filePath, false);
@@ -82,6 +98,12 @@ class DeviceFileHelper
 		fileOutput.close();
 	}
 
+	/**
+	 * function removeDevice
+	 * Removes a device of the passed architecture from file.
+	 *
+	 * @param arch EmulatorArchitecture
+	**/
 	public function removeDevice( arch : EmulatorArchitecture ) : Bool
 	{
 		for (i in 0...devices.length)
@@ -101,6 +123,13 @@ class DeviceFileHelper
 		return false;
 	}
 
+	/**
+	 * function addDevice
+	 * Adds a device of the passed architecture to file. If a device of this architecture 
+	 * already exist, it will be removed.
+	 *
+	 * @param arch EmulatorArchitecture
+	**/
 	public function addDevice( arch : EmulatorArchitecture, device : Device ) : Bool
 	{
 		device.arch = arch;
@@ -117,6 +146,13 @@ class DeviceFileHelper
 		return true;
 	}
 
+	/**
+	 * function hasDeviceForArchitecture
+	 * Checks if a device for the passed architecture was used / is configured.
+	 *
+	 * @param arch EmulatorArchitecture
+	 * @return Bool true if it a device is configured, else false
+	**/
 	public function hasDeviceForArchitecture( arch : EmulatorArchitecture ) : Bool
 	{
 		for ( d in devices )
@@ -126,6 +162,16 @@ class DeviceFileHelper
 		return false;
 	}
 
+	/**
+	 * function isArchitectureDevice
+	 * At some point you don't know the architecture of a device from the device list of the emulator. For this
+	 * purpose it's needed to check this device against the configured one and the architecture for which the 
+	 * unittests should run.
+	 *
+	 * @param arch EmulatorArchitecture
+	 * @param device Device
+	 * @return Bool true if the device is setted up for the passed architecture, else false
+	**/
 	public function isArchitectureDevice( arch : EmulatorArchitecture, device : Device ) : Bool
 	{
 		for ( d in devices )
