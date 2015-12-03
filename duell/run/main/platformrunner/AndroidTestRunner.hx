@@ -12,7 +12,6 @@ import haxe.io.Path;
 
 class AndroidTestRunner extends TestingPlatformRunner
 {
-
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
 	private static inline var DEFAULT_ARMV7_EMULATOR = "duellarmv7";
     private static inline var DEFAULT_X86_EMULATOR = "duellx86";

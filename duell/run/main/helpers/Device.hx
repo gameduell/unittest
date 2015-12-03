@@ -1,5 +1,7 @@
 package duell.run.main.helpers;
 
+import duell.run.main.helpers.Emulator;
+
 enum DeviceState {
 	OFFLINE;
 	ONLINE;
@@ -11,9 +13,10 @@ class Device
 {
 	private static inline var DELIMETER = "-";
 
+	public var arch(default, default) : EmulatorArchitecture;
 	public var port(default, default) : String;
-	public var state(default, default) : DeviceState = OFFLINE;
-
+	public var state(default, default) : DeviceState = UNKNOWN;
+	public var pid(default, default) : String;
 
 	public function new()
 	{
@@ -60,6 +63,6 @@ class Device
 
 	public function toString() : String 
 	{
-		return "Device name:" + getName() + " port:" + port + " state:" + state;
+		return "Name:" + getName() + " Port:" + port + " State:" + state + " Arch:" + arch + " Pid:" + pid;
 	}
 }

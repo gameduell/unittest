@@ -2,12 +2,16 @@ package duell.run.main;
 
 import sys.FileSystem;
 
+
 import duell.objects.DuellProcess;
 import duell.defines.DuellDefines;
 import duell.objects.Arguments;
 import duell.helpers.LogHelper;
+import duell.run.main.helpers.Emulator;
+import duell.run.main.helpers.Device;
 import duell.run.main.helpers.Devices;
 import duell.run.main.helpers.UnitTestConfig;
+import duell.run.main.helpers.DeviceFileHelper;
 import duell.run.main.platformrunner.ITestingPlatformRunner;
 import duell.run.main.platformrunner.AndroidTestRunner;
 import duell.run.main.platformrunner.IOSTestRunner;
@@ -26,6 +30,16 @@ class RunMain
         {
             return;
         }
+
+  //       var dfh = new DeviceFileHelper();
+		
+		// var d = new Device();
+		// d.port = "1254";
+		// d.pid = "1254";
+
+  //       LogHelper.info("add ARM: " + dfh.addDevice(ARM, d));
+
+  //       return;
 
         if(!Arguments.isSet("-path")){
         	LogHelper.exitWithFormattedError("Use '-path' to define the path to your unittest project compilation.");

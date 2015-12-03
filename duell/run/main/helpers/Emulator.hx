@@ -47,6 +47,18 @@ enum EmulatorArchitecture
 @:access(duell.objects.DuellProcess)
 class Emulator
 {
+
+	public static function getEmulatorArchitechture( value : String ) : EmulatorArchitecture
+	{
+		switch( value )
+		{
+			case 'X86' : return X86;
+			case 'ARM' : return ARM;
+		}
+
+		return null;
+	}
+
 	private static inline var EMULATOR_IS_RUNNING_TIME_TO_CHECK = 3;
 	private static inline var SECONDS_BEFORE_GIVINGUP_ON_EMULATOR_LAUNCHING = 300;
 	private var emulatorName: String;
