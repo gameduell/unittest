@@ -1,6 +1,8 @@
 package duell.run.main.platformrunner;
 
 import duell.run.main.helpers.UnitTestConfig;
+import duell.run.main.helpers.DefaultServerListenerHelper;
+
 import duell.helpers.PathHelper;
 import duell.helpers.LogHelper;
 import duell.helpers.TestHelper;
@@ -16,6 +18,7 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	private var unitTestLibPath : String;
 	private var testResultFile : String;
 	private var platform : String;
+	private var listener : DefaultServerListenerHelper;
 
 	public function new(platform : String)
 	{
@@ -24,6 +27,8 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 		testResultFile = Path.join([testResultPath, resultFileName()]);
 
 		unitTestLibPath = DuellLib.getDuellLib('unittest').getPath();
+
+		listener = new DefaultServerListenerHelper(testResultFile);
 	}
 
 	public function prepareTestRun() : Void
@@ -40,10 +45,7 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 
 	private function runListener()
 	{
-		var testPort : Int = Arguments.isSet("-port") ? Arguments.get("-port") : 8181;
-
-        /// RUN THE LISTENER
-        TestHelper.runListenerServer(300, testPort, testResultFile);
+		listener.runListener();
 	}
 
 	public function runTests() : Void 

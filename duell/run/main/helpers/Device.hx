@@ -1,6 +1,6 @@
 package duell.run.main.helpers;
 
-import duell.run.main.helpers.Emulator;
+import duell.run.main.emulator.Emulator;
 
 enum DeviceState {
 	OFFLINE;

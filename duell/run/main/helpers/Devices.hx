@@ -1,6 +1,6 @@
 package duell.run.main.helpers;
 
-import duell.run.main.helpers.Emulator;
+import duell.run.main.emulator.Emulator;
 
 import duell.objects.HXCPPConfigXML;
 import duell.objects.DuellProcess;
@@ -49,20 +49,32 @@ class Devices
         LogHelper.info("====> found devices:\n" + devices);
 	}
 
-	public static function getDevice() : Device
+	public static function getDeviceByName( name:String ) : Device
 	{
-		for ( d in devices )
+		LogHelper.info("devices.length: " + devices.length );
+		for (d in devices)
 		{
-			return d;
+			if ( d.getName() == name )
+				return d;
 		}
 
-		var newDevice = createNewDevice();
-		devices.push(newDevice);
-
-		return newDevice;
+		return null;
 	}
 
-	private static function createNewDevice() : Device
+	// public static function getDevice() : Device
+	// {
+	// 	for ( d in devices )
+	// 	{
+	// 		return d;
+	// 	}
+
+	// 	var newDevice = createNewDevice();
+	// 	devices.push(newDevice);
+
+	// 	return newDevice;
+	// }
+
+	public static function createNewDevice() : Device
 	{
 		var port = 5554 + Std.random(125);
 		
@@ -73,6 +85,8 @@ class Devices
 
 		var device = new Device();
 		device.port = Std.string(port);
+
+		devices.push(device);
 
 		return device;
 	}

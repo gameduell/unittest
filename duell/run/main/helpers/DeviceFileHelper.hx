@@ -7,7 +7,7 @@ import haxe.io.Path;
 
 import duell.helpers.LogHelper;
 import duell.helpers.DuellConfigHelper;
-import duell.run.main.helpers.Emulator;
+import duell.run.main.emulator.Emulator;
 
 class DeviceFileHelper
 {
@@ -134,7 +134,7 @@ class DeviceFileHelper
 	{
 		device.arch = arch;
 
-		if(hasDeviceForArchitecture( arch ))
+		if(hasDeviceForArchitecture( arch ) != null)
 		{
 			removeDevice( arch );
 		}
@@ -151,15 +151,15 @@ class DeviceFileHelper
 	 * Checks if a device for the passed architecture was used / is configured.
 	 *
 	 * @param arch EmulatorArchitecture
-	 * @return Bool true if it a device is configured, else false
+	 * @return Device returns the certain device for this special architecture or null if no device was found
 	**/
-	public function hasDeviceForArchitecture( arch : EmulatorArchitecture ) : Bool
+	public function hasDeviceForArchitecture( arch : EmulatorArchitecture ) : Device
 	{
 		for ( d in devices )
 			if( d.arch == arch )
-				return true;
+				return d;
 
-		return false;
+		return null;
 	}
 
 	/**
