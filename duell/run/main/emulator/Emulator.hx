@@ -29,8 +29,8 @@ package duell.run.main.emulator;
 import duell.objects.HXCPPConfigXML;
 import duell.objects.DuellProcess;
 import duell.helpers.HXCPPConfigXMLHelper;
+import duell.helpers.LogHelper;
 import duell.run.main.helpers.Device;
-import duell.run.main.helpers.Devices;
 import duell.run.main.emulator.commands.IEmulatorCommand;
 
 import haxe.io.Path;
@@ -60,8 +60,8 @@ class Emulator
 	private static inline var EMULATOR_IS_RUNNING_TIME_TO_CHECK = 3;
 	private static inline var SECONDS_BEFORE_GIVINGUP_ON_EMULATOR_LAUNCHING = 300;
 
-	private var emulatorProcess: DuellProcess;
 	private var adbPath: String;
+	private var devices: Array<Device>;
 	private var device : Device;
 
 	public function new(): Void
@@ -74,12 +74,86 @@ class Emulator
 		var defines : Map<String, String> = hxcppConfig.getDefines();
 		adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 
-		Devices.setup( adbPath );
+		var adbProcess = new DuellProcess(
+        adbPath,
+        "adb",
+        ["devices"],
+        {
+        	timeout : 60,
+        	logOnlyIfVerbose : false,
+        	shutdownOnError : false,
+        	block : true,
+        	mute : true,
+        	errorMessage : "displaying the devices"
+        });
+
+        var output = adbProcess.getCompleteStdout().toString();
+        parse(output);
+
+        LogHelper.info("", "Devices: \n" + devices);
+	}
+
+	private function parse( list:String )
+	{
+		devices = new Array<Device>();
+
+		var deviceList = list.split('\n');
+		var row : String;
+		for (i in 0...deviceList.length)
+		{
+			row = deviceList[i];
+
+			if(i == 0 || row.length == 0) // headline or empty row
+				continue;
+
+			var device = getExistingDevice(row);
+			if(device != null)
+			{
+				devices.push(device);
+			}
+		}
+	}
+
+	private function getExistingDevice( entry:String ) : Device
+	{
+		var raw = unifyDeviceEntry(entry);
+		var parts = raw.split(" ");
+		var device : Device = null;
+
+		if(parts.length >= 2)
+		{
+			device = new Device();
+			device.parseName(parts[0]);
+			device.setDeviceState(parts[1]);
+		}
+
+		if(device == null || !validEmulatorDevice(device))
+			return null;
+
+		return device;
+	}
+
+	/**
+	 * function validDevice
+	 * Checks if the parameters of the Device object are valid.
+	 *
+	 * @param device Device
+	**/
+	private function validEmulatorDevice( device:Device ) : Bool
+	{
+		return device.isComplete();
 	}
 
 	public function getDeviceByName( name:String ) : Device
 	{
-		return Devices.getDeviceByName( name );
+		// return Devices.getDeviceByName( name );
+		for (d in devices)
+		{
+			if ( d.getName() == name )
+				return d;
+		}
+
+		return null;
 	}
 
 	public function useDevice( d:Device )
@@ -89,10 +163,35 @@ class Emulator
 
 	public function createDevice( arch:EmulatorArchitecture ) : Device
 	{
-		device = Devices.createNewDevice();
+		// device = Devices.createNewDevice();
+		var port = 5554 + Std.random(125);
+		
+		if (port % 2 > 0)
+		{
+			port += 1;
+		}
+
+		var device = new Device();
+		device.port = Std.string(port);
 		device.arch = arch;
 
+		devices.push(device);
+
 		return device;
+	}
+
+	/**
+	 * function unifyDeviceEntry
+	 * Removes spaces except one and returns the result string
+	 *
+	 * @param entry String
+	 * @return result String with reduced whitespaces
+	**/
+	private function unifyDeviceEntry( entry : String ) : String
+	{
+		var regEx = ~/\s/g;
+
+		return regEx.replace(entry, ' ');
 	}
 
 	public function runEmulator( commands:Array<IEmulatorCommand> )
@@ -101,12 +200,6 @@ class Emulator
 		{
 			commands[i].execute( adbPath );
 		}
-	}
-
-	public function shutdown(): Void
-	{
-		if (emulatorProcess != null)
-			emulatorProcess.kill();
 	}
 
 	public function getCurrentDevice() : Device 

@@ -95,7 +95,8 @@ class AndroidTestRunner extends TestingPlatformRunner
                 // reuse the existing and running emulator
                 emulatorDevice.arch = emulatorArch;
                 emulatorDevice.pid = usedDevice.pid;
-                
+                LogHelper.info("", "Reuse existing emulator device: " + emulatorDevice);
+
                 emulator.useDevice(emulatorDevice);
                 setupReuseProcess(emulatorDevice);
             }   
@@ -135,6 +136,9 @@ class AndroidTestRunner extends TestingPlatformRunner
     private function setupNewProcess()
     {
         var device = emulator.createDevice( emulatorArch );
+        emulator.useDevice( device );
+        
+        LogHelper.info("", "Created new emulator device: " + device);
 
         //create emulator commands
         commands = new Array<IEmulatorCommand>();
