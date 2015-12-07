@@ -1,13 +1,8 @@
 package duell.run.main.helpers;
 
 import duell.run.main.emulator.Emulator;
-
-import duell.objects.HXCPPConfigXML;
 import duell.objects.DuellProcess;
-
 import duell.helpers.LogHelper;
-import duell.helpers.HXCPPConfigXMLHelper;
-
 
 import haxe.io.Path;
 
@@ -15,18 +10,13 @@ class Devices
 {
 
 	private static inline var EMULATOR_NAME = "emulator";
-
-	private static var adbPath : String;
 	private static var devices : Array<Device>;
 
 	private static function setADBPath()
 	{
-		var hxcppConfig = HXCPPConfigXML.getConfig(HXCPPConfigXMLHelper.getProbableHXCPPConfigLocation());
-		var defines : Map<String, String> = hxcppConfig.getDefines();
-		adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
 	}
 
-	public static function setup()
+	public static function setup( adbPath:String )
 	{
 		setADBPath();
 
@@ -46,12 +36,11 @@ class Devices
         var output = adbProcess.getCompleteStdout().toString();
         parse(output);
 
-        LogHelper.info("====> found devices:\n" + devices);
+        LogHelper.info("", "Devices: \n" + devices);
 	}
 
 	public static function getDeviceByName( name:String ) : Device
 	{
-		LogHelper.info("devices.length: " + devices.length );
 		for (d in devices)
 		{
 			if ( d.getName() == name )
@@ -60,19 +49,6 @@ class Devices
 
 		return null;
 	}
-
-	// public static function getDevice() : Device
-	// {
-	// 	for ( d in devices )
-	// 	{
-	// 		return d;
-	// 	}
-
-	// 	var newDevice = createNewDevice();
-	// 	devices.push(newDevice);
-
-	// 	return newDevice;
-	// }
 
 	public static function createNewDevice() : Device
 	{

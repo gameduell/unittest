@@ -47,45 +47,20 @@ class AndroidTestRunner extends TestingPlatformRunner
         setArchitecture();
         initializeEmulator();
         checkReuseEmulator();
-
-		// setAdbPath();		
-		// waitForEmulatorReady();
-		// uninstallApp();
 	}
 
 	override public function runTests() : Void 
 	{
-		LogHelper.info("AndroidTestRunner :: runTests");
-
-        // installAndStartApp();
         emulator.runEmulator( commands );
 	}
 
 	override public function closeTests() : Void
 	{
-        LogHelper.info("AndroidTestRunner :: closeTests");
-
         var d = emulator.getCurrentDevice();
         deviceFile.addDevice(emulatorArch, d);
 
-        new SleepProcessCommand( d.pid ).run();
-
-        // if(!Arguments.isSet('-keepEmulatorProcess'))
-        // {
-        //     shutdownEmulator();
-        // }
-        // if(emulator != null)
-        // {
-        //     emulator.stopDevice();
-        // } 
+        //new SleepProcessCommand( d.pid ).run();
 	}
-
-	// private function setAdbPath()
-	// {
-	// 	var hxcppConfig = HXCPPConfigXML.getConfig(HXCPPConfigXMLHelper.getProbableHXCPPConfigLocation());
- //        var defines : Map<String, String> = hxcppConfig.getDefines();
- //        adbPath = Path.join([defines.get("ANDROID_SDK"), "platform-tools"]);
-	// }
 
     private function setArchitecture()
     {
@@ -105,7 +80,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
     private function initializeEmulator()
     {
-        emulator = new Emulator(emulatorName, emulatorArch);
+        emulator = new Emulator();
         emulator.initialize();
     }
 
@@ -117,7 +92,6 @@ class AndroidTestRunner extends TestingPlatformRunner
             var emulatorDevice = emulator.getDeviceByName(usedDevice.getName());
             if( emulatorDevice != null && emulatorDevice.isOnline() )
             {
-                LogHelper.info("AndroidTestRunner :: reuse device!");
                 // reuse the existing and running emulator
                 emulatorDevice.arch = emulatorArch;
                 emulatorDevice.pid = usedDevice.pid;
@@ -127,21 +101,17 @@ class AndroidTestRunner extends TestingPlatformRunner
             }   
             else
             {
-                LogHelper.info("AndroidTestRunner :: checkReuseEmulator : emulatorDevice not found or not online : " + emulatorDevice);
                 setupNewProcess();
             }
         }
         else
         {
-            LogHelper.info("AndroidTestRunner :: checkReuseEmulator : no used device found : " + usedDevice);
             setupNewProcess();
         }
     }
 
     private function setupReuseProcess( device : Device )
     {
-        LogHelper.info("AndroidTestRunner :: setupReuseProcess :: device : " + device);
-
         //check process available, usually it's not needed to check, because if there is a running device, there must be process for it
         var checkProcessCmd = new GetProcessAvailableCommand(device.pid);
         checkProcessCmd.run();
@@ -164,7 +134,6 @@ class AndroidTestRunner extends TestingPlatformRunner
 
     private function setupNewProcess()
     {
-        LogHelper.info("AndroidTestRunner :: setupNewProcess ");
         var device = emulator.createDevice( emulatorArch );
 
         //create emulator commands
@@ -173,78 +142,5 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands.push(new WaitUntilReadyCommand( device ));
         commands.push(new UninstallAppCommand( device.getName(), config.getPackage() ));
         commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
-    }
-
-	// private function uninstallApp()
-	// {
-	// 	var args = ["-s", emulator.getDeviceName(), "shell", "pm", "uninstall", config.getPackage()];
-
- //        var adbProcess = new DuellProcess(
- //        adbPath,
- //        "adb",
- //        args,
- //        {
- //        	timeout : 60,
- //        	logOnlyIfVerbose : false,
- //        	shutdownOnError : false,
- //        	block : true,
- //        	errorMessage : "uninstalling the app from the device"
- //        });
-	// }
-
-	// private function installAndStartApp()
-	// {
-	// 	var args = ["-s", emulator.getDeviceName(), "install", "-r", getAppPath(), "-netfast"];
-
- //        var adbProcess = new DuellProcess(
- //                                        adbPath,
- //                                        "adb",
- //                                        args,
- //                                        {
- //                                            timeout : 300,
- //                                            logOnlyIfVerbose : false,
- //                                            shutdownOnError : true,
- //                                            block : true,
- //                                            errorMessage : "installing on device"
- //                                        });
-
- //       	ThreadHelper.runInAThread(function()
- //            {
- //                Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
- //                runActivity();
- //            }
- //        );
-
- //       	runListener();
-	// }
-
-	// private function runActivity()
- //    {
- //        var args = ["-s", emulator.getDeviceName(), "shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", config.getPackage() + "/" + config.getPackage() + "." + "MainActivity"];
-
- //        var adbProcess = new DuellProcess(
- //                                        adbPath,
- //                                        "adb",
- //                                        args,
- //                                        {
- //                                            timeout : 60,
- //                                            logOnlyIfVerbose : false,
- //                                            shutdownOnError : true,
- //                                            block : true,
- //                                            errorMessage : "running the app on the device"
- //                                        });
- //    }
-
-	// private function waitForEmulatorReady()
-	// {
-	// 	emulator.waitUntilReady();
-	// }
-
-	private function shutdownEmulator()
-    {
-        if (emulator == null)
-            return;
-
-        emulator.shutdown();
     }
 }
