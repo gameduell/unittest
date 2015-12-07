@@ -11,12 +11,15 @@ import duell.run.main.helpers.DeviceFileHelper;
 import duell.run.main.commands.GetProcessAvailableCommand;
 import duell.run.main.commands.ContinueProcessCommand;
 import duell.run.main.commands.SleepProcessCommand;
+import duell.run.main.commands.KillProcessCommand;
 import duell.run.main.emulator.Emulator;
 import duell.run.main.emulator.commands.IEmulatorCommand;
 import duell.run.main.emulator.commands.CreateEmulatorCommand;
 import duell.run.main.emulator.commands.WaitUntilReadyCommand;
 import duell.run.main.emulator.commands.UninstallAppCommand;
 import duell.run.main.emulator.commands.InstallAndStartAppCommand;
+import duell.run.main.emulator.commands.KillServerCommand;
+import duell.run.main.emulator.commands.StartServerCommand;
 
 import haxe.io.Path;
 
@@ -135,6 +138,8 @@ class AndroidTestRunner extends TestingPlatformRunner
 
     private function setupNewProcess()
     {
+        killRunningEmulators();
+
         var device = emulator.createDevice( emulatorArch );
         emulator.useDevice( device );
         
@@ -142,9 +147,32 @@ class AndroidTestRunner extends TestingPlatformRunner
 
         //create emulator commands
         commands = new Array<IEmulatorCommand>();
+        commands.push(new KillServerCommand());
+        commands.push(new StartServerCommand());
         commands.push(new CreateEmulatorCommand( emulatorName, device ));
         commands.push(new WaitUntilReadyCommand( device ));
         commands.push(new UninstallAppCommand( device.getName(), config.getPackage() ));
         commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
+    }
+
+    private function killRunningEmulators()
+    {
+        var devicesInFile = deviceFile.devices;
+        var device : Device = null;
+        for ( d in devicesInFile )
+        {
+            device = emulator.getDeviceByName( d.getName() );
+            if( device != null)
+            {
+                var proc = new GetProcessAvailableCommand( d.pid );
+                proc.run();
+
+                if( proc.processExisting )
+                {
+                    new KillProcessCommand( d.pid ).run();
+                    deviceFile.removeDevice( d.arch );
+                }
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ class DeviceFileHelper
 	
 	private static inline var DELIMETER : String = ' ';
 	private static var FILE : String = 'run_unittest.config';
-	private var devices : Array<Device>;
+	public var devices(default, null) : Array<Device>;
 	private var filePath : String = null;
 	private var fileContent : Array<String>;
 
