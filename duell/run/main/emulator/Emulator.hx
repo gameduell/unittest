@@ -32,6 +32,7 @@ import duell.helpers.HXCPPConfigXMLHelper;
 import duell.helpers.LogHelper;
 import duell.run.main.helpers.Device;
 import duell.run.main.emulator.commands.IEmulatorCommand;
+import duell.run.main.emulator.commands.GetDeviceArchitectureCommand;
 
 import haxe.io.Path;
 
@@ -93,14 +94,24 @@ class Emulator
         LogHelper.info("", "Devices: \n" + devices);
 	}
 
-	public function getRunningEmulatorDevice() : Device
+	public function getRunningEmulatorDevice( arch:EmulatorArchitecture ) : Device
 	{
 		for ( d in devices )
 		{
 			if ( d.isOnline() )
-				return d;
-		}
+			{
+				var proc = new GetDeviceArchitectureCommand( d.getName() );
+				proc.execute( adbPath );
 
+				if( proc.arch == arch )
+				{
+					d.arch = arch;
+					return d;
+				}
+
+			}
+		}
+		
 		return null;
 	}
 
