@@ -63,10 +63,4 @@
             Use this if you want to build for armv7. If you don't specify a platform, this will be default.
         </documentation>
     </arg>
-
-    <arg name="-keepEmulatorProcess" type="void">
-        <documentation>
-            Use this if you want to keep the emulator process running in the background.
-        </documentation>
-    </arg>
 </plugin>
