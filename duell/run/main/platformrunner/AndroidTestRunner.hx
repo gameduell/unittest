@@ -45,7 +45,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 	{
 		super.prepareTestRun();
 
-        deviceFile = new DeviceFileHelper();
+        // deviceFile = new DeviceFileHelper();
 
         setArchitecture();
         initializeEmulator();
@@ -59,8 +59,8 @@ class AndroidTestRunner extends TestingPlatformRunner
 
 	override public function closeTests() : Void
 	{
-        var d = emulator.getCurrentDevice();
-        deviceFile.addDevice(emulatorArch, d);
+        // var d = emulator.getCurrentDevice();
+        // deviceFile.addDevice(emulatorArch, d);
 
         //new SleepProcessCommand( d.pid ).run();
 	}
@@ -89,24 +89,38 @@ class AndroidTestRunner extends TestingPlatformRunner
 
     private function checkReuseEmulator()
     {
-        var usedDevice = deviceFile.hasDeviceForArchitecture(emulatorArch);
-        if( usedDevice != null )
-        {
-            var emulatorDevice = emulator.getDeviceByName(usedDevice.getName());
-            if( emulatorDevice != null && emulatorDevice.isOnline() )
-            {
-                // reuse the existing and running emulator
-                emulatorDevice.arch = emulatorArch;
-                emulatorDevice.pid = usedDevice.pid;
-                LogHelper.info("", "Reuse existing emulator device: " + emulatorDevice);
+        // var usedDevice = deviceFile.hasDeviceForArchitecture(emulatorArch);
+        // if( usedDevice != null )
+        // {
 
-                emulator.useDevice(emulatorDevice);
-                setupReuseProcess(emulatorDevice);
-            }   
-            else
-            {
-                setupNewProcess();
-            }
+        //     var emulatorDevice = emulator.getDeviceByName(usedDevice.getName());
+        //     if( emulatorDevice != null && emulatorDevice.isOnline() )
+        //     {
+        //         // reuse the existing and running emulator
+        //         emulatorDevice.arch = emulatorArch;
+        //         emulatorDevice.pid = usedDevice.pid;
+        //         LogHelper.info("", "Reuse existing emulator device: " + emulatorDevice);
+
+        //         emulator.useDevice(emulatorDevice);
+        //         setupReuseProcess(emulatorDevice);
+        //     }   
+        //     else
+        //     {
+        //         setupNewProcess();
+        //     }
+        // }
+        // else
+        // {
+        //     setupNewProcess();
+        // }
+
+        var runningDevice = emulator.getRunningEmulatorDevice();
+        if ( runningDevice != null )
+        {
+            runningDevice.arch = emulatorArch;
+
+            emulator.useDevice( runningDevice );
+            setupReuseProcess( runningDevice );
         }
         else
         {
@@ -117,17 +131,17 @@ class AndroidTestRunner extends TestingPlatformRunner
     private function setupReuseProcess( device : Device )
     {
         //check process available, usually it's not needed to check, because if there is a running device, there must be process for it
-        var checkProcessCmd = new GetProcessAvailableCommand(device.pid);
-        checkProcessCmd.run();
+        // var checkProcessCmd = new GetProcessAvailableCommand(device.pid);
+        // checkProcessCmd.run();
 
-        if( !checkProcessCmd.processExisting )
-        {
-            setupNewProcess();
-            return;         
-        }
+        // if( !checkProcessCmd.processExisting )
+        // {
+        //     setupNewProcess();
+        //     return;         
+        // }
 
         //awake process
-        new ContinueProcessCommand( device.pid ).run();
+        // new ContinueProcessCommand( device.pid ).run();
         
         //create emulator commands
         commands = new Array<IEmulatorCommand>();
@@ -138,7 +152,7 @@ class AndroidTestRunner extends TestingPlatformRunner
 
     private function setupNewProcess()
     {
-        killRunningEmulators();
+        // killRunningEmulators();
 
         var device = emulator.createDevice( emulatorArch );
         emulator.useDevice( device );
@@ -155,24 +169,24 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
     }
 
-    private function killRunningEmulators()
-    {
-        var devicesInFile = deviceFile.devices;
-        var device : Device = null;
-        for ( d in devicesInFile )
-        {
-            device = emulator.getDeviceByName( d.getName() );
-            if( device != null)
-            {
-                var proc = new GetProcessAvailableCommand( d.pid );
-                proc.run();
+    // private function killRunningEmulators()
+    // {
+    //     var devicesInFile = deviceFile.devices;
+    //     var device : Device = null;
+    //     for ( d in devicesInFile )
+    //     {
+    //         device = emulator.getDeviceByName( d.getName() );
+    //         if( device != null)
+    //         {
+    //             var proc = new GetProcessAvailableCommand( d.pid );
+    //             proc.run();
 
-                if( proc.processExisting )
-                {
-                    new KillProcessCommand( d.pid ).run();
-                    deviceFile.removeDevice( d.arch );
-                }
-            }
-        }
-    }
+    //             if( proc.processExisting )
+    //             {
+    //                 new KillProcessCommand( d.pid ).run();
+    //                 deviceFile.removeDevice( d.arch );
+    //             }
+    //         }
+    //     }
+    // }
 }

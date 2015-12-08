@@ -93,6 +93,17 @@ class Emulator
         LogHelper.info("", "Devices: \n" + devices);
 	}
 
+	public function getRunningEmulatorDevice() : Device
+	{
+		for ( d in devices )
+		{
+			if ( d.isOnline() )
+				return d;
+		}
+
+		return null;
+	}
+
 	private function parse( list:String )
 	{
 		devices = new Array<Device>();
@@ -163,7 +174,7 @@ class Emulator
 
 	public function createDevice( arch:EmulatorArchitecture ) : Device
 	{
-		// device = Devices.createNewDevice();
+		
 		var port = 5554 + Std.random(125);
 		
 		if (port % 2 > 0)
