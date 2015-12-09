@@ -3,6 +3,7 @@ package duell.run.main.platformrunner;
 import duell.objects.DuellProcess;
 import duell.objects.Server;
 import duell.objects.Arguments;
+import duell.objects.DuellLib;
 import duell.helpers.PlatformHelper;
 import duell.helpers.ThreadHelper;
 import duell.helpers.CommandHelper;
@@ -58,6 +59,8 @@ class HTML5TestRunner extends TestingPlatformRunner
 	//runs in slimerJS only
 	private function runApp()
 	{
+		var dependendLibrary = DuellLib.getDuellLib( dependendLibrary );
+
 		var slimerFolder: String;
 		var xulrunnerFolder: String;
 		var xulrunnerCommand: String;
@@ -78,9 +81,9 @@ class HTML5TestRunner extends TestingPlatformRunner
  			xulrunnerCommand = "xulrunner.exe";
  		}
 		
-		xulrunnerFolder = Path.join([unitTestLibPath,"bin", platform, slimerFolder,"xulrunner"]);
-		var appPath = Path.join([unitTestLibPath, "bin", platform, slimerFolder, "application.ini"]);
-	    var scriptPath = Path.join([unitTestLibPath, "bin", platform, "application.js"]);
+		xulrunnerFolder = Path.join([dependendLibrary.getPath(),"bin", slimerFolder,"xulrunner"]);
+		var appPath = Path.join([dependendLibrary.getPath(), "bin", slimerFolder, "application.ini"]);
+	    var scriptPath = Path.join([dependendLibrary.getPath(), "bin", "application.js"]);
 
 		if (PlatformHelper.hostPlatform != WINDOWS)
 		{
