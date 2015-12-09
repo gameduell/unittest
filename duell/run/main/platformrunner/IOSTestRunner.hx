@@ -1,6 +1,7 @@
 package duell.run.main.platformrunner;
 
 import duell.objects.Arguments;
+import duell.objects.DuellLib;
 import duell.helpers.ThreadHelper;
 import duell.helpers.CommandHelper;
 
@@ -25,6 +26,8 @@ class IOSTestRunner extends TestingPlatformRunner
 
 	private function runApp()
 	{
+		var lib = DuellLib.getDuellLib( dependendLibrary );
+
 		var arguments = Arguments.isSet('-simulator') ? "runsimulator_args" : "rundevice_args";
 		var argsString = File.getContent(Path.join([unitTestLibPath, "configurations", platform, arguments]));
 		argsString = StringTools.replace(argsString, "::PATH::", Arguments.get('-path'));
@@ -33,7 +36,7 @@ class IOSTestRunner extends TestingPlatformRunner
 
 		if(Arguments.isSet('-simulator'))
 		{
-			var launcher = Path.join([unitTestLibPath , "bin", platform, "ios-sim"]);
+			var launcher = Path.join([lib.getPath() , "bin", "ios-sim"]);
 			CommandHelper.runCommand("", "chmod", ["+x", launcher], {errorMessage: "setting permissions on the simulator launcher"});
 
 			var launcherPath = Path.directory(launcher);
@@ -41,7 +44,7 @@ class IOSTestRunner extends TestingPlatformRunner
 		}
 		else
 		{
-			var launcher = Path.join([unitTestLibPath , "bin", platform, "ios-deploy"]);
+			var launcher = Path.join([lib.getPath(), "bin", "ios-deploy"]);
 			CommandHelper.runCommand("", "chmod", ["+x", launcher], {errorMessage: "setting permission on the ios deploy tool"});
 
 			CommandHelper.runCommand("", launcher, args, {errorMessage: "deploying the app into the device"});
