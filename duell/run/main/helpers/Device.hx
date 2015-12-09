@@ -11,8 +11,7 @@ enum DeviceState {
 
 class Device
 {
-	private static inline var DELIMETER = "-";
-
+	public var name(default, default) : String;
 	public var arch(default, default) : EmulatorArchitecture;
 	public var port(default, default) : String;
 	public var state(default, default) : DeviceState = UNKNOWN;
@@ -22,20 +21,6 @@ class Device
 	{
 	}
 
-	public function getName() : String
-	{
-		return "emulator" + DELIMETER + port;
-	}
-
-	public function parseName( name : String )
-	{
-		if(name == null || name.length == 0 || name.charAt(0) == '*')
-			return;
-
-		var parts = name.split(DELIMETER);
-		port = parts.length >= 2 ? parts[1] : null;
-	}
-
 	public function setDeviceState( state : String )
 	{
 		this.state = getDeviceState(state);
@@ -43,6 +28,8 @@ class Device
 
 	private function getDeviceState( value : String ) : DeviceState
 	{
+		value = value.toLowerCase();
+
 		switch( value ){
 			case 'offline' : return OFFLINE;
 			case 'device' : return ONLINE;
@@ -56,13 +43,8 @@ class Device
 		return state == ONLINE;
 	}
 
-	public function isComplete() : Bool
-	{
-		return port != null && state != null;
-	}
-
 	public function toString() : String 
 	{
-		return "Name:" + getName() + " Port:" + port + " State:" + state + " Arch:" + arch + " Pid:" + pid;
+		return "Name:" + name + " Port:" + port + " State:" + state + " Arch:" + arch + " Pid:" + pid;
 	}
 }

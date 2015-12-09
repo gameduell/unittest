@@ -84,7 +84,7 @@ class DeviceFileHelper
 	**/
 	private function createDeviceEntry( d : Device ) : String 
 	{
-		return d.arch + DELIMETER + d.getName() + DELIMETER + d.pid;
+		return d.arch + DELIMETER + d.name + DELIMETER + d.pid;
 	}
 
 	/**
@@ -175,7 +175,7 @@ class DeviceFileHelper
 	public function isArchitectureDevice( arch : EmulatorArchitecture, device : Device ) : Bool
 	{
 		for ( d in devices )
-			if( d.getName() == device.getName() && d.arch == arch )
+			if( d.name == device.name && d.arch == arch )
 				return true;
 
 		return false;

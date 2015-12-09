@@ -34,7 +34,15 @@ class AndroidTestRunner extends TestingPlatformRunner
 
         setArchitecture();
         initializeEmulator();
-        checkReuseEmulator();
+
+        if(Arguments.isSet('-devicename'))
+        {
+            checkDeviceUsage();
+        }
+        else
+        {
+            checkReuseEmulator();
+        }
 	}
 
 	override public function runTests() : Void 
@@ -64,12 +72,48 @@ class AndroidTestRunner extends TestingPlatformRunner
         emulator.initialize();
     }
 
+    private function checkDeviceUsage()
+    {
+        var deviceName = Arguments.get('-devicename');
+        var choosedDevice = emulator.getDeviceByName( deviceName );
+        if(choosedDevice == null || !choosedDevice.isOnline() )
+        {
+            LogHelper.exitWithFormattedError("No device with name '" + deviceName + "' found or the device is not online! Device: " + choosedDevice);
+        }
+
+        if( emulator.isEmulatorDevice( choosedDevice.name ) )
+        {
+            //check if architecture is correct
+            if( choosedDevice.arch != emulatorArch )
+            {
+                LogHelper.exitWithFormattedError("Selected emulator device architecture doesn't match. Set device architecture by using '-x86' or don't set anything to use the default one (ARM).");
+            }
+
+            setupReuseProcess( choosedDevice );
+        }
+        else
+        {
+            setupRealDeviceProcess( choosedDevice );
+        }
+    }
+
+    private function setupRealDeviceProcess( realDevice : Device )
+    {
+        emulator.useDevice( realDevice );
+
+        LogHelper.info("", "Using the real device: " + realDevice);
+
+        //create real device commands
+        commands = new Array<IEmulatorCommand>();
+        commands.push(new UninstallAppCommand( realDevice.name, config.getPackage() ));
+        commands.push(new InstallAndStartAppCommand( realDevice, getAppPath(), config.getPackage(), listener));
+    }
+
     private function checkReuseEmulator()
     {
         var runningDevice = emulator.getRunningEmulatorDevice( emulatorArch );
         if ( runningDevice != null )
         {
-            emulator.useDevice( runningDevice );
             setupReuseProcess( runningDevice );
         }
         else
@@ -80,16 +124,20 @@ class AndroidTestRunner extends TestingPlatformRunner
 
     private function setupReuseProcess( device : Device )
     {   
+        emulator.useDevice( device );
+
+        LogHelper.info("", "Reuse the existing device: " + device);
+
         //create emulator commands
         commands = new Array<IEmulatorCommand>();
         commands.push(new WaitUntilReadyCommand( device ));
-        commands.push(new UninstallAppCommand( device.getName(), config.getPackage() ));
+        commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
         commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
     }
 
     private function setupNewProcess()
     {
-        var device = emulator.createDevice( emulatorArch );
+        var device = emulator.createEmulatorDevice( emulatorArch );
         emulator.useDevice( device );
         
         LogHelper.info("", "Created new emulator device: " + device);
@@ -100,7 +148,7 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands.push(new StartServerCommand());
         commands.push(new CreateEmulatorCommand( emulatorName, device ));
         commands.push(new WaitUntilReadyCommand( device ));
-        commands.push(new UninstallAppCommand( device.getName(), config.getPackage() ));
+        commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
         commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
     }
 }

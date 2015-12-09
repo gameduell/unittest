@@ -2,6 +2,9 @@
 <plugin>
     <documentation>
         Unittest library run plugin, allows you to run your unittests.
+        By default it will run the unittests on a emulated device. You can specify a real device by using '-devicename' argument. It's also possible to target an specific emulated
+        device by using this argument.
+        Furthermore it will run the tests on 'ARM' architecture by default if you are not using the '-x86' argument.
     </documentation>
 
     <arg name="-android" type="void">
@@ -52,15 +55,16 @@
         </documentation>
     </arg>
 
-    <arg name="-armv6" type="void">
-        <documentation>
-            Use this if you want to build for armv6. Default will be armv7.
-        </documentation>
-    </arg>
-
     <arg name="-armv7" type="void">
         <documentation>
             Use this if you want to build for armv7. If you don't specify a platform, this will be default.
+        </documentation>
+    </arg>
+
+    <arg name="-devicename" type="string">
+        <documentation>
+            Use this if you want to target a specific real android device. You have to take care that the architecture of the targeted device fits to the arguments you 
+            passed, else the unittests will not run.
         </documentation>
     </arg>
 </plugin>

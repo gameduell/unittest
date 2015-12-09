@@ -29,7 +29,7 @@ class WaitUntilReadyCommand implements IEmulatorCommand
 		var timeStarted = Timer.stamp();
 
 		var argsConnect = ["connect", "localhost:" + device.port];
-		var argsBoot = ["-s", device.getName(), "shell", "getprop", "dev.bootcomplete"];
+		var argsBoot = ["-s", device.name, "shell", "getprop", "dev.bootcomplete"];
 
 		var opts = {
 			timeout : 0.0,

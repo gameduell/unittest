@@ -2,6 +2,7 @@ package duell.run.main.helpers;
 
 import duell.objects.Arguments;
 import duell.helpers.TestHelper;
+import duell.helpers.LogHelper;
 
 class DefaultServerListenerHelper
 {
@@ -17,6 +18,7 @@ class DefaultServerListenerHelper
 	{
 		var testPort : Int = Arguments.isSet("-port") ? Arguments.get("-port") : 8181;
 
+		LogHelper.info('', 'Run listener on port ' + testPort);
         /// RUN THE LISTENER
         TestHelper.runListenerServer(300, testPort, testResultFile);
 	}

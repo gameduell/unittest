@@ -24,7 +24,7 @@ class InstallAndStartAppCommand implements IEmulatorCommand
 
 	public function execute( adbPath:String ) : Void
 	{
-		var args = ["-s", device.getName() , "install", "-r", appPath, "-netfast"];
+		var args = ["-s", device.name , "install", "-r", appPath, "-netfast"];
 
         var adbProcess = new DuellProcess(
                                         adbPath,
@@ -50,7 +50,7 @@ class InstallAndStartAppCommand implements IEmulatorCommand
 
 	private function runActivity( adbPath:String )
 	{
-		var args = ["-s", device.getName(), "shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", appPackage + "/" + appPackage + "." + "MainActivity"];
+		var args = ["-s", device.name, "shell", "am", "start", "-a", "android.intent.action.MAIN", "-n", appPackage + "/" + appPackage + "." + "MainActivity"];
 
         var adbProcess = new DuellProcess(
                                     adbPath,

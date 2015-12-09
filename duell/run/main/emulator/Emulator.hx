@@ -49,6 +49,8 @@ class Emulator
 
 	public static function getEmulatorArchitechture( value:String ) : EmulatorArchitecture
 	{
+		value = value.toUpperCase();
+
 		switch( value )
 		{
 			case 'X86' : return X86;
@@ -60,6 +62,7 @@ class Emulator
 
 	private static inline var EMULATOR_IS_RUNNING_TIME_TO_CHECK = 3;
 	private static inline var SECONDS_BEFORE_GIVINGUP_ON_EMULATOR_LAUNCHING = 300;
+	private static inline var EMULATOR_NAME_DELIMETER = "-";
 
 	private var adbPath: String;
 	private var devices: Array<Device>;
@@ -90,8 +93,21 @@ class Emulator
 
         var output = adbProcess.getCompleteStdout().toString();
         parse(output);
+        setArchitectures();
 
         LogHelper.info("", "Devices: \n" + devices);
+	}
+
+	private function setArchitectures()
+	{
+		for ( d in devices )
+		{
+			if( d.isOnline() )
+			{
+				var dArchitecture = getDeviceArchitecture( d );
+				d.arch = dArchitecture;
+			}
+		}
 	}
 
 	public function getRunningEmulatorDevice( arch:EmulatorArchitecture ) : Device
@@ -100,12 +116,8 @@ class Emulator
 		{
 			if ( d.isOnline() )
 			{
-				var proc = new GetDeviceArchitectureCommand( d.getName() );
-				proc.execute( adbPath );
-
-				if( proc.arch == arch )
+				if( d.arch == arch )
 				{
-					d.arch = arch;
 					return d;
 				}
 
@@ -113,6 +125,14 @@ class Emulator
 		}
 		
 		return null;
+	}
+
+	private function getDeviceArchitecture( device:Device ) : EmulatorArchitecture
+	{
+		var proc = new GetDeviceArchitectureCommand( device.name );
+		proc.execute( adbPath );
+
+		return proc.arch;
 	}
 
 	private function parse( list:String )
@@ -125,18 +145,18 @@ class Emulator
 		{
 			row = deviceList[i];
 
-			if(i == 0 || row.length == 0) // headline or empty row
+			if(i == 0 || row.length == 0 || row.charAt(0) == '*') // headline, empty row or adb info line
 				continue;
 
-			var device = getExistingDevice(row);
+			var device = parseExistingDevice( row );
 			if(device != null)
 			{
-				devices.push(device);
+				devices.push( device );
 			}
 		}
 	}
 
-	private function getExistingDevice( entry:String ) : Device
+	private function parseExistingDevice( entry:String ) : Device
 	{
 		var raw = unifyDeviceEntry(entry);
 		var parts = raw.split(" ");
@@ -144,34 +164,32 @@ class Emulator
 
 		if(parts.length >= 2)
 		{
-			device = new Device();
-			device.parseName(parts[0]);
-			device.setDeviceState(parts[1]);
+				device = new Device();
+				device.name = parts[0];
+				device.port = getDevicePort( device.name );
+				device.setDeviceState(parts[1]);
 		}
-
-		if(device == null || !validEmulatorDevice(device))
-			return null;
 
 		return device;
 	}
 
-	/**
-	 * function validDevice
-	 * Checks if the parameters of the Device object are valid.
-	 *
-	 * @param device Device
-	**/
-	private function validEmulatorDevice( device:Device ) : Bool
+	private function getDevicePort( deviceName:String ) : String
 	{
-		return device.isComplete();
+		return isEmulatorDevice( deviceName ) ? deviceName.split(EMULATOR_NAME_DELIMETER)[1] : Std.string( getRandomPort() );
+	}
+
+	public function isEmulatorDevice( name:String ) : Bool
+	{
+		var parts = name.split(EMULATOR_NAME_DELIMETER);
+
+		return parts.length == 2 && parts[0] == 'emulator' && parts[1].length == 4 ? true : false;
 	}
 
 	public function getDeviceByName( name:String ) : Device
 	{
-		// return Devices.getDeviceByName( name );
 		for (d in devices)
 		{
-			if ( d.getName() == name )
+			if ( d.name == name )
 				return d;
 		}
 
@@ -183,9 +201,22 @@ class Emulator
 		device = d;
 	}
 
-	public function createDevice( arch:EmulatorArchitecture ) : Device
+	public function createEmulatorDevice( arch:EmulatorArchitecture ) : Device
 	{
-		
+		var port = getRandomPort(); 
+
+		var device = new Device();
+		device.port = Std.string( port );
+		device.name = "emulator" + EMULATOR_NAME_DELIMETER + device.port;
+		device.arch = arch;
+
+		devices.push( device );
+
+		return device;
+	}
+
+	private function getRandomPort() : Int
+	{
 		var port = 5554 + Std.random(125);
 		
 		if (port % 2 > 0)
@@ -193,13 +224,7 @@ class Emulator
 			port += 1;
 		}
 
-		var device = new Device();
-		device.port = Std.string(port);
-		device.arch = arch;
-
-		devices.push(device);
-
-		return device;
+		return port;
 	}
 
 	/**
