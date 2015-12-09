@@ -75,25 +75,25 @@ class AndroidTestRunner extends TestingPlatformRunner
     private function checkDeviceUsage()
     {
         var deviceName = Arguments.get('-devicename');
-        var choosedDevice = emulator.getDeviceByName( deviceName );
-        if(choosedDevice == null || !choosedDevice.isOnline() )
+        var chosenDevice = emulator.getDeviceByName( deviceName );
+        if(chosenDevice == null || !chosenDevice.isOnline() )
         {
-            LogHelper.exitWithFormattedError("No device with name '" + deviceName + "' found or the device is not online! Device: " + choosedDevice);
+            LogHelper.exitWithFormattedError("No device with name '" + deviceName + "' found or the device is not online! Device: " + chosenDevice);
         }
 
-        if( emulator.isEmulatorDevice( choosedDevice.name ) )
+        if( emulator.isEmulatorDevice( chosenDevice.name ) )
         {
             //check if architecture is correct
-            if( choosedDevice.arch != emulatorArch )
+            if( chosenDevice.arch != emulatorArch )
             {
                 LogHelper.exitWithFormattedError("Selected emulator device architecture doesn't match. Set device architecture by using '-x86' or don't set anything to use the default one (ARM).");
             }
 
-            setupReuseProcess( choosedDevice );
+            setupReuseProcess( chosenDevice );
         }
         else
         {
-            setupRealDeviceProcess( choosedDevice );
+            setupRealDeviceProcess( chosenDevice );
         }
     }
 
