@@ -6,18 +6,21 @@ import duell.run.main.helpers.Device;
 import duell.run.main.emulator.Emulator;
 import duell.run.main.emulator.commands.IEmulatorCommand;
 import duell.run.main.emulator.commands.CreateEmulatorCommand;
-import duell.run.main.emulator.commands.WaitUntilReadyCommand;
-import duell.run.main.emulator.commands.UninstallAppCommand;
-import duell.run.main.emulator.commands.InstallAndStartAppCommand;
 import duell.run.main.emulator.commands.KillServerCommand;
 import duell.run.main.emulator.commands.StartServerCommand;
-import duell.run.main.emulator.commands.GetDeviceArchitectureCommand;
+import duell.run.main.emulator.commands.WaitUntilReadyCommand;
+import duell.run.main.emulator.commands.UninstallAppCommand;
+import duell.run.main.emulator.commands.InstallAppCommand;
+import duell.run.main.emulator.commands.StartAppCommand;
+import duell.run.main.emulator.commands.ReverseCommunicationCommand;
+import duell.run.main.emulator.commands.RemoveReversedCommunicationCommand;
 
 class AndroidTestRunner extends TestingPlatformRunner
 {
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
 	private static inline var DEFAULT_ARMV7_EMULATOR = "duellarmv7";
     private static inline var DEFAULT_X86_EMULATOR = "duellx86";
+
 	private var emulator : Emulator;
     private var emulatorName : String = null;
     private var emulatorArch : EmulatorArchitecture = null;
@@ -106,7 +109,10 @@ class AndroidTestRunner extends TestingPlatformRunner
         //create real device commands
         commands = new Array<IEmulatorCommand>();
         commands.push(new UninstallAppCommand( realDevice.name, config.getPackage() ));
-        commands.push(new InstallAndStartAppCommand( realDevice, getAppPath(), config.getPackage(), listener));
+        commands.push(new InstallAppCommand( realDevice, getAppPath()));
+        commands.push(new ReverseCommunicationCommand( realDevice ));
+        commands.push(new StartAppCommand( realDevice, config.getPackage(), listener ));
+        commands.push(new RemoveReversedCommunicationCommand( realDevice ));
     }
 
     private function checkReuseEmulator()
@@ -132,7 +138,8 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands = new Array<IEmulatorCommand>();
         commands.push(new WaitUntilReadyCommand( device ));
         commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
-        commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
+        commands.push(new InstallAppCommand( device, getAppPath()));
+        commands.push(new StartAppCommand( device, config.getPackage(), listener ));
     }
 
     private function setupNewProcess()
@@ -149,6 +156,8 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands.push(new CreateEmulatorCommand( emulatorName, device ));
         commands.push(new WaitUntilReadyCommand( device ));
         commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
-        commands.push(new InstallAndStartAppCommand( device, getAppPath(), config.getPackage(), listener));
+        commands.push(new InstallAppCommand( device, getAppPath()));
+        commands.push(new ReverseCommunicationCommand( device ));
+        commands.push(new StartAppCommand( device, config.getPackage(), listener ));
     }
 }

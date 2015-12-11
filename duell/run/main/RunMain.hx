@@ -11,13 +11,10 @@ import duell.run.main.platformrunner.AndroidTestRunner;
 import duell.run.main.platformrunner.IOSTestRunner;
 import duell.run.main.platformrunner.HTML5TestRunner;
 
-import duell.run.main.commands.GetProcessAvailableCommand;
-
 import haxe.Timer;
 
 class RunMain
 {
-	
 	public static function main()
 	{
 		var stamp : Float = Timer.stamp();

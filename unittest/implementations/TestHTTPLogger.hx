@@ -51,11 +51,7 @@ class TestHTTPLogger implements unittest.TestLogger
 
     private var httpMessageQueue : HTTPMessageQueue = new HTTPMessageQueue();
 
-#if android
-    static public var DEFAULT_URL = "http://10.0.2.2";
-#else
     static public var DEFAULT_URL = "http://localhost";
-#end
 
     public function new(testLogger : TestLogger, url : String = null) : Void
     {

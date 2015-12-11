@@ -6,46 +6,30 @@ import duell.helpers.ThreadHelper;
 import duell.run.main.helpers.Device;
 import duell.run.main.helpers.DefaultServerListenerHelper;
 
-class InstallAndStartAppCommand implements IEmulatorCommand
-{	
+class StartAppCommand implements IEmulatorCommand
+{
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
 	private var device : Device;
-	private var appPath : String;
 	private var appPackage : String;
 	private var listener : DefaultServerListenerHelper;
 
-	public function new( device:Device, appPath:String, appPackage:String, listener : DefaultServerListenerHelper )
+	public function new( device:Device, appPackage:String, listener:DefaultServerListenerHelper )
 	{
 		this.device = device;
-		this.appPath = appPath;
 		this.appPackage = appPackage;
 		this.listener = listener;
 	}
 
 	public function execute( adbPath:String ) : Void
 	{
-		var args = ["-s", device.name , "install", "-r", appPath, "-netfast"];
-
-        var adbProcess = new DuellProcess(
-                                        adbPath,
-                                        "adb",
-                                        args,
-                                        {
-                                            timeout : 300,
-                                            logOnlyIfVerbose : false,
-                                            shutdownOnError : true,
-                                            block : true,
-                                            errorMessage : "installing on device"
-                                        });
-
        	ThreadHelper.runInAThread(function()
             {
                 Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
-                runActivity(adbPath);
+                runActivity( adbPath );
             }
         );
 
-       	listener.runListener();
+        listener.runListener(); 
 	}
 
 	private function runActivity( adbPath:String )

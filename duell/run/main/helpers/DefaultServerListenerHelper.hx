@@ -18,7 +18,6 @@ class DefaultServerListenerHelper
 	{
 		var testPort : Int = Arguments.isSet("-port") ? Arguments.get("-port") : 8181;
 
-		LogHelper.info('', 'Run listener on port ' + testPort);
         /// RUN THE LISTENER
         TestHelper.runListenerServer(300, testPort, testResultFile);
 	}
