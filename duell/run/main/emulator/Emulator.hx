@@ -33,6 +33,7 @@ import duell.helpers.LogHelper;
 import duell.run.main.helpers.Device;
 import duell.run.main.emulator.commands.IEmulatorCommand;
 import duell.run.main.emulator.commands.GetDeviceArchitectureCommand;
+import duell.run.main.emulator.commands.GetDeviceVersionCommand;
 
 import haxe.io.Path;
 
@@ -93,12 +94,13 @@ class Emulator
 
         var output = adbProcess.getCompleteStdout().toString();
         parse(output);
-        setArchitectures();
+
+        setDeviceInformations();
 
         LogHelper.info("", "Devices: \n" + devices);
 	}
 
-	private function setArchitectures()
+	private function setDeviceInformations()
 	{
 		for ( d in devices )
 		{
@@ -106,6 +108,8 @@ class Emulator
 			{
 				var dArchitecture = getDeviceArchitecture( d );
 				d.arch = dArchitecture;
+
+				d.setVersion( getDeviceAndroidVersion( d ) );
 			}
 		}
 	}
@@ -133,6 +137,14 @@ class Emulator
 		proc.execute( adbPath );
 
 		return proc.arch;
+	}
+
+	private function getDeviceAndroidVersion( device:Device ) : String
+	{
+		var proc = new GetDeviceVersionCommand( device.name );
+		proc.execute( adbPath );
+
+		return proc.version;
 	}
 
 	private function parse( list:String )

@@ -16,9 +16,20 @@ class Device
 	public var port(default, default) : String;
 	public var state(default, default) : DeviceState = UNKNOWN;
 	public var pid(default, default) : String;
+	private var version : Version;
 
 	public function new()
 	{
+	}
+
+	public function setVersion( value:String )
+	{
+		version = new Version( value );
+	}
+
+	public function getMajorVersion() : String 
+	{
+		return version != null ? version.major : '0';
 	}
 
 	public function setDeviceState( state : String )
@@ -45,6 +56,29 @@ class Device
 
 	public function toString() : String 
 	{
-		return "Name:" + name + " Port:" + port + " State:" + state + " Arch:" + arch + " Pid:" + pid;
+		return "Name:" + name + " Port:" + port + " State:" + state + " Arch:" + arch + " Pid:" + pid + " Android-Version:" + version;
+	}
+}
+
+class Version
+{
+	private var version : Array<String>;
+	public var major(default, null) : String;
+	public var minor(default, null) : String;
+	public var patch(default, null) : String;
+
+	public function new( version:String )
+	{
+		this.version = new Array<String>();
+		this.version = version.split(".");
+
+		major = this.version.length >= 1 ? this.version[0] : '0';
+		minor = this.version.length >= 2 ? this.version[1] : '0';
+		patch = this.version.length >= 3 ? this.version[2] : '0';
+	}
+
+	public function toString() : String
+	{
+		return version.join(".");
 	}
 }
