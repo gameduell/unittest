@@ -7,7 +7,7 @@ import duell.helpers.LogHelper;
 class DefaultServerListenerHelper
 {
 
-	private var testResultFile : String;
+	public var testResultFile(default, null) : String;
 
 	public function new( testResultFile : String )
 	{

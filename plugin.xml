@@ -5,6 +5,8 @@
         By default it will run the unittests on a emulated device. You can specify a real device by using '-devicename' argument. It's also possible to target an specific emulated
         device by using this argument.
         Furthermore it will run the tests on 'ARM' architecture by default if you are not using the '-x86' argument.
+        For older devices (Android version below 5.0) you have to make sure that you didn't used an HTTP logger in your unit tests, because they will not be able to connect to your local machine
+        and your test results will most probably look strange.
     </documentation>
 
     <arg name="-android" type="void">

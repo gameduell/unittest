@@ -221,6 +221,7 @@ class Emulator
 		device.port = Std.string( port );
 		device.name = "emulator" + EMULATOR_NAME_DELIMETER + device.port;
 		device.arch = arch;
+		device.setVersion( '6.0.0' );
 
 		devices.push( device );
 

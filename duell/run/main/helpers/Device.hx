@@ -27,9 +27,9 @@ class Device
 		version = new Version( value );
 	}
 
-	public function getMajorVersion() : String 
+	public function getMajorVersion() : Int 
 	{
-		return version != null ? version.major : '0';
+		return version != null ? version.major : 0;
 	}
 
 	public function setDeviceState( state : String )
@@ -63,18 +63,18 @@ class Device
 class Version
 {
 	private var version : Array<String>;
-	public var major(default, null) : String;
-	public var minor(default, null) : String;
-	public var patch(default, null) : String;
+	public var major(default, null) : Int;
+	public var minor(default, null) : Int;
+	public var patch(default, null) : Int;
 
 	public function new( version:String )
 	{
 		this.version = new Array<String>();
 		this.version = version.split(".");
 
-		major = this.version.length >= 1 ? this.version[0] : '0';
-		minor = this.version.length >= 2 ? this.version[1] : '0';
-		patch = this.version.length >= 3 ? this.version[2] : '0';
+		major = this.version.length >= 1 ? Std.parseInt( this.version[0] ) : 0;
+		minor = this.version.length >= 2 ? Std.parseInt( this.version[1] ) : 0;
+		patch = this.version.length >= 3 ? Std.parseInt( this.version[2] ) : 0;
 	}
 
 	public function toString() : String
