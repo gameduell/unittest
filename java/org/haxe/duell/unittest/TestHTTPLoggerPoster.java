@@ -44,7 +44,7 @@ public class TestHTTPLoggerPoster
 		{
 			try {
 				/// PREPARE OBJECTS
-				URL url = new URL("http://10.0.2.2:" + port + "/");
+				URL url = new URL("http://localhost:" + port + "/");
 
 				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 

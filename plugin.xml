@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin>
+    <documentation>
+        Unittest library run plugin, allows you to run your unittests.
+        By default it will run the unittests on a emulated device. You can specify a real device by using '-devicename' argument. It's also possible to target an specific emulated
+        device by using this argument.
+        Furthermore it will run the tests on 'ARM' architecture by default if you are not using the '-x86' argument.
+        For older devices (Android version below 5.0) you have to make sure that you didn't used an HTTP logger in your unit tests, because they will not be able to connect to your local machine
+        and your test results will most probably look strange.
+    </documentation>
+
+    <arg name="-android" type="void">
+        <documentation>
+            Specifies that you want to run your tests on android.
+        </documentation>
+    </arg>
+
+    <arg name="-ios" type="void">
+        <documentation>
+            Specifies that you want to run your tests on ios.
+        </documentation>
+    </arg>
+
+    <arg name="-html5" type="void">
+        <documentation>
+            Specifies that you want to run your tests on html5.
+        </documentation>
+    </arg>
+
+	<arg name="-path" type="string">
+        <documentation>
+            Specfies the path to your apk file. By default it searches for "Export/android/bin/bin/APPLICATION_NAME-release.apk"
+        </documentation>
+    </arg>
+
+    <arg name="-port" type="int">
+        <documentation>
+            Define a port number to be used by unittest.TestHTTPLogger and Python test result listener.
+        </documentation>
+    </arg>
+
+    <arg name="-simulator" type="void">
+        <documentation>
+            Set this flag if you want to run the iOS unit tests in the simulator.
+        </documentation>
+    </arg>    
+
+    <arg name="-wipeemulator" type="void">
+        <documentation>
+            Use this if you want to wipe the user data with the start of the emulator.
+        </documentation>
+    </arg>
+
+    <arg name="-x86" type="void">
+        <documentation>
+            Use this argument if you want to build specifically for x86 platforms. Default will be armv7.
+        </documentation>
+    </arg>
+
+    <arg name="-armv7" type="void">
+        <documentation>
+            Use this if you want to build for armv7. If you don't specify a platform, this will be default.
+        </documentation>
+    </arg>
+
+    <arg name="-devicename" type="string">
+        <documentation>
+            Use this if you want to target a specific real android device. You have to take care that the architecture of the targeted device fits to the arguments you 
+            passed, else the unittests will not run.
+        </documentation>
+    </arg>
+</plugin>
