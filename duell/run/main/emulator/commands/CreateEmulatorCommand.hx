@@ -79,7 +79,5 @@ class CreateEmulatorCommand implements IEmulatorCommand
 											errorMessage : "running emulator",
 											systemCommand: false
 										});
-
-		device.pid = Std.string( emulatorProcess.getPid() );
 	}
 }

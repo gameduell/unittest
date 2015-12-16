@@ -15,7 +15,6 @@ class Device
 	public var arch(default, default) : EmulatorArchitecture;
 	public var port(default, default) : String;
 	public var state(default, default) : DeviceState = UNKNOWN;
-	public var pid(default, default) : String;
 	private var version : Version;
 
 	public function new()
@@ -56,7 +55,7 @@ class Device
 
 	public function toString() : String 
 	{
-		return "Name:" + name + " Port:" + port + " State:" + state + " Arch:" + arch + " Pid:" + pid + " Android-Version:" + version;
+		return "Name:" + name + " Port:" + port + " State:" + state + " Arch:" + arch + " Android-Version:" + version;
 	}
 }
 
