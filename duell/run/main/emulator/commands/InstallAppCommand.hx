@@ -17,7 +17,7 @@ class InstallAppCommand implements IEmulatorCommand
 
 	public function execute( adbPath:String ) : Void
 	{
-		var args = ["-s", device.name , "install", "-r", appPath, "-netfast"];
+		var args = ["-s", device.name , "install", "-r", appPath];
 
         var adbProcess = new DuellProcess(
                                         adbPath,
