@@ -180,6 +180,7 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands.push(new WaitUntilReadyCommand( device ));
         commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
         commands.push(new InstallAppCommand( device, getAppPath()));
+        commands.push(new ReverseCommunicationCommand( device ));
         commands.push(new StartAppCommand( device, config.getPackage(), listener ));
     }
 
