@@ -11,23 +11,23 @@
 
     <arg name="-android" type="void">
         <documentation>
-            Specifies that you want to run your tests on android.
+            Specifies that you want to run your tests on android. If you want to run the tests on android, the following arguments are mandatory: -path, -package
         </documentation>
     </arg>
 
     <arg name="-ios" type="void">
         <documentation>
-            Specifies that you want to run your tests on ios.
+            Specifies that you want to run your tests on ios. Mandatory arguments when using this argument are: -path
         </documentation>
     </arg>
 
     <arg name="-html5" type="void">
         <documentation>
-            Specifies that you want to run your tests on html5.
+            Specifies that you want to run your tests on html5. Mandatory arguements when using this target are: -path In addition to that you could use the arguments -winHeight and -winWidth.
         </documentation>
     </arg>
 
-	<arg name="-path" type="string">
+    <arg name="-path" type="string">
         <documentation>
             Specfies the path to your apk file. By default it searches for "Export/android/bin/bin/APPLICATION_NAME-release.apk"
         </documentation>
@@ -67,6 +67,24 @@
         <documentation>
             Use this if you want to target a specific real android device. You have to take care that the architecture of the targeted device fits to the arguments you 
             passed, else the unittests will not run.
+        </documentation>
+    </arg>
+
+    <arg name="-winHeight" type="int">
+        <documentation>
+            Use this if you want to specify the slimer window heigth on the HTML5 target.
+        </documentation>
+    </arg>
+
+    <arg name="-winWidth" type="int">
+        <documentation>
+            Use this if you want to specify the slimer window width on the HTML5 target.
+        </documentation>
+    </arg>
+
+    <arg name="-package" type="string">
+        <documentation>
+            You need to use it when you run your unittests on android. This arguments should pass the package path of your application, e.g. -package de.gameduell.unittestProject 
         </documentation>
     </arg>
 </plugin>

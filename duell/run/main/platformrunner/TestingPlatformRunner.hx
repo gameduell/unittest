@@ -1,6 +1,5 @@
 package duell.run.main.platformrunner;
 
-import duell.run.main.helpers.UnitTestConfig;
 import duell.run.main.helpers.DefaultServerListenerHelper;
 
 import duell.helpers.PathHelper;
@@ -16,7 +15,6 @@ import haxe.io.Path;
 
 class TestingPlatformRunner implements ITestingPlatformRunner
 {
-	private var config : IUnitTestConfig;
 	private var unitTestLibPath : String;
 	private var testResultFile : String;
 	private var platform : String;
@@ -35,6 +33,8 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 
 		dependendLibrary = 'duellbuild' + platform;
 	}
+
+	public function validateArguments() : Void {}
 
 	public function prepareTestRun() : Void
 	{
@@ -95,10 +95,4 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	{
 		return 'test_result_' + platform + '.xml';
 	}
-
-	public function setConfig(value : IUnitTestConfig)
-	{
-		config = value;
-	}
-
 }

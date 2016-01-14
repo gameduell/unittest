@@ -17,10 +17,19 @@ class HTML5TestRunner extends TestingPlatformRunner
 
 	private var server : Server;
 	private var slimerProcess : DuellProcess;
+	private var winHeight : String;
+	private var winWidth : String;
 
 	public function new()
 	{
 		super('html5');
+	}
+
+	override public function validateArguments() : Void {
+		super.validateArguments();
+
+		winHeight = Arguments.isSet("-winHeight") ? Arguments.get("-winHeight") : '0';
+		winWidth = Arguments.isSet("-winWidth") ? Arguments.get("-winWidth") : '0';
 	}
 
 	override public function runTests() : Void 
@@ -107,7 +116,7 @@ class HTML5TestRunner extends TestingPlatformRunner
 										["-app",
 										appPath,
 										"-no-remote",
-										scriptPath, config.winWidth(), config.winHeight()],
+										scriptPath, winWidth, winHeight],
 										{
 											logOnlyIfVerbose : true,
 											systemCommand : false,

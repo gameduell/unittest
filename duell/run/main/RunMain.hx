@@ -5,7 +5,6 @@ import sys.FileSystem;
 import duell.defines.DuellDefines;
 import duell.objects.Arguments;
 import duell.helpers.LogHelper;
-import duell.run.main.helpers.UnitTestConfig;
 import duell.run.main.platformrunner.ITestingPlatformRunner;
 import duell.run.main.platformrunner.AndroidTestRunner;
 import duell.run.main.platformrunner.IOSTestRunner;
@@ -40,12 +39,7 @@ class RunMain
 	}
 
 	public function init()
-	{		
-		if(!hasProjectFile())
-		{
-			LogHelper.exitWithFormattedError('No project file found.');
-		}        
-
+	{
 		setupTests();
 	}
 
@@ -54,10 +48,7 @@ class RunMain
 		var platformRunner = specifyTestingPlatform();
 		if(platformRunner != null)
 		{
-			var config = UnitTestConfig.getConfig();
-			config.parse();
-
-			platformRunner.setConfig(config);
+			platformRunner.validateArguments();
 
 			platformRunner.prepareTestRun();
 

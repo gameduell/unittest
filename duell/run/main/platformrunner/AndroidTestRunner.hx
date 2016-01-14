@@ -19,22 +19,34 @@ import duell.run.main.emulator.commands.RemoveReversedCommunicationCommand;
 class AndroidTestRunner extends TestingPlatformRunner
 {
     private static inline var NEEDED_ANDROID_VERSION_REVERSE_COMMUNICTION = 5;
-	private static inline var DEFAULT_ARMV7_EMULATOR = "duellarmv7";
+    private static inline var DEFAULT_ARMV7_EMULATOR = "duellarmv7";
     private static inline var DEFAULT_X86_EMULATOR = "duellx86";
 
-	private var emulator : Emulator;
+    private var emulator : Emulator;
     private var emulatorName : String = null;
     private var emulatorArch : EmulatorArchitecture = null;
     private var commands : Array<IEmulatorCommand>;
+    private var package_path : String; 
 
-	public function new()
-	{
-		super("android");
-	}
+    public function new()
+    {
+        super("android");
+    }
 
-	override public function prepareTestRun() : Void
-	{
-		super.prepareTestRun();
+    override public function validateArguments() : Void {
+        super.validateArguments();
+
+        if( !Arguments.isSet("-package") )
+        {
+            LogHelper.exitWithFormattedError("To run unittests on Android the application package is needed, e.g. '-package de.gameduell.unittestApplication'");
+        }
+
+        package_path = Arguments.get("-package");
+    }
+
+    override public function prepareTestRun() : Void
+    {
+        super.prepareTestRun();
 
         setArchitecture();
         initializeEmulator();
@@ -47,12 +59,12 @@ class AndroidTestRunner extends TestingPlatformRunner
         {
             checkReuseEmulator();
         }
-	}
+    }
 
-	override public function runTests() : Void 
-	{
+    override public function runTests() : Void 
+    {
         emulator.runEmulator( commands );
-	}
+    }
 
     private function setArchitecture()
     {
@@ -110,13 +122,13 @@ class AndroidTestRunner extends TestingPlatformRunner
 
         //create real device commands
         commands = new Array<IEmulatorCommand>();
-        commands.push(new UninstallAppCommand( realDevice.name, config.getPackage() ));
+        commands.push(new UninstallAppCommand( realDevice.name, package_path ));
         commands.push(new InstallAppCommand( realDevice, getAppPath()));
         
         if( helper == null)
             commands.push(new ReverseCommunicationCommand( realDevice ));
 
-        commands.push(new StartAppCommand( realDevice, config.getPackage(), listener, helper ));
+        commands.push(new StartAppCommand( realDevice, package_path, listener, helper ));
 
         if( helper == null )
             commands.push(new RemoveReversedCommunicationCommand( realDevice ));
@@ -151,9 +163,9 @@ class AndroidTestRunner extends TestingPlatformRunner
         //create emulator commands
         commands = new Array<IEmulatorCommand>();
         commands.push(new WaitUntilReadyCommand( device ));
-        commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
+        commands.push(new UninstallAppCommand( device.name, package_path ));
         commands.push(new InstallAppCommand( device, getAppPath()));
-        commands.push(new StartAppCommand( device, config.getPackage(), listener ));
+        commands.push(new StartAppCommand( device, package_path, listener ));
     }
 
     /**
@@ -178,10 +190,10 @@ class AndroidTestRunner extends TestingPlatformRunner
         commands.push(new StartServerCommand());
         commands.push(new CreateEmulatorCommand( emulatorName, device ));
         commands.push(new WaitUntilReadyCommand( device ));
-        commands.push(new UninstallAppCommand( device.name, config.getPackage() ));
+        commands.push(new UninstallAppCommand( device.name, package_path ));
         commands.push(new InstallAppCommand( device, getAppPath()));
         commands.push(new ReverseCommunicationCommand( device ));
-        commands.push(new StartAppCommand( device, config.getPackage(), listener ));
+        commands.push(new StartAppCommand( device, package_path, listener ));
     }
 
     private function getLogCatHelper( device:Device ) : FetchLogcatHelper
