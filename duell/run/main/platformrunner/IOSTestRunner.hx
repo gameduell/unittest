@@ -10,7 +10,6 @@ import sys.io.File;
 
 class IOSTestRunner extends TestingPlatformRunner
 {
-	
 	public function new()
 	{
 		super('ios');
@@ -30,7 +29,7 @@ class IOSTestRunner extends TestingPlatformRunner
 
 		var arguments = Arguments.isSet('-simulator') ? "runsimulator_args" : "rundevice_args";
 		var argsString = File.getContent(Path.join([unitTestLibPath, "configurations", platform, arguments]));
-		argsString = StringTools.replace(argsString, "::PATH::", Arguments.get('-path'));
+		argsString = StringTools.replace(argsString, "::PATH::", getAppPath());
 		var args = argsString.split("\n");
 		args = args.filter(function(str) return str != "");
 
