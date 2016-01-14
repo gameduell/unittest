@@ -24,20 +24,30 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	public function new(platform : String)
 	{
 		this.platform = platform;
-		var testResultPath = Path.join([Sys.getCwd(), "Export", "unittests"]);
-		testResultFile = Path.join([testResultPath, resultFileName()]);
 
 		unitTestLibPath = DuellLib.getDuellLib('unittest').getPath();
-
-		listener = new DefaultServerListenerHelper(testResultFile);
 
 		dependendLibrary = 'duellbuild' + platform;
 	}
 
-	public function validateArguments() : Void {}
+	public function validateArguments() : Void {
+		var path : String = "";
+		if ( Arguments.isSet('-export') )
+		{
+			path = Arguments.get( '-export' );
+		}
+		else
+		{
+			path = Path.join([Sys.getCwd(), "unittests"]);
+		}
+
+		testResultFile = Path.join([path, resultFileName()]);
+	}
 
 	public function prepareTestRun() : Void
 	{
+		listener = new DefaultServerListenerHelper( testResultFile );
+
 		checkDependedLibraryInstalled();
 		clearTestResultFile();
 	}

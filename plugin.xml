@@ -87,4 +87,10 @@
             You need to use it when you run your unittests on android. This arguments should pass the package path of your application, e.g. -package de.gameduell.unittestProject 
         </documentation>
     </arg>
+
+    <arg name="-export" type="string">
+        <documentation>
+            Use this argument if you want to specify a folder for the unittest result files. By default the files will be stored in ./unittests.
+        </documentation>
+    </arg>
 </plugin>
