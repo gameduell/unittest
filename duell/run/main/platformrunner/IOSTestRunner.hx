@@ -25,7 +25,7 @@ class IOSTestRunner extends TestingPlatformRunner
 
 	private function runApp()
 	{
-		var lib = DuellLib.getDuellLib( dependendLibrary );
+		var lib = DuellLib.getDuellLib( dependedLibrary );
 
 		var arguments = Arguments.isSet('-simulator') ? "runsimulator_args" : "rundevice_args";
 		var argsString = File.getContent(Path.join([unitTestLibPath, "configurations", platform, arguments]));

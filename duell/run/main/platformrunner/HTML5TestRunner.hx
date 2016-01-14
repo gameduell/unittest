@@ -68,7 +68,7 @@ class HTML5TestRunner extends TestingPlatformRunner
 	//runs in slimerJS only
 	private function runApp()
 	{
-		var dependendLibrary = DuellLib.getDuellLib( dependendLibrary );
+		var dependendLibrary = DuellLib.getDuellLib( dependedLibrary );
 
 		var slimerFolder: String;
 		var xulrunnerFolder: String;
