@@ -18,7 +18,7 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	private var unitTestLibPath : String;
 	private var testResultFile : String;
 	private var platform : String;
-	private var dependendLibrary : String;
+	private var dependedLibrary : String;
 	private var listener : DefaultServerListenerHelper;
 
 	public function new(platform : String)
@@ -27,7 +27,7 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 
 		unitTestLibPath = DuellLib.getDuellLib('unittest').getPath();
 
-		dependendLibrary = 'duellbuild' + platform;
+		dependedLibrary = 'duellbuild' + platform;
 	}
 
 	public function validateArguments() : Void {
@@ -66,7 +66,7 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 
 	private function checkDependedLibraryInstalled()
 	{
-		var lib = DuellLib.getDuellLib( dependendLibrary );
+		var lib = DuellLib.getDuellLib( dependedLibrary );
 
 		if(!DuellLibHelper.isInstalled( lib.name ))
 		{
