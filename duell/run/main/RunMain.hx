@@ -9,6 +9,7 @@ import duell.run.main.platformrunner.ITestingPlatformRunner;
 import duell.run.main.platformrunner.AndroidTestRunner;
 import duell.run.main.platformrunner.IOSTestRunner;
 import duell.run.main.platformrunner.HTML5TestRunner;
+import duell.run.main.platformrunner.ElectronTestRunner;
 
 import haxe.Timer;
 
@@ -19,19 +20,19 @@ class RunMain
 		var stamp : Float = Timer.stamp();
 
 		if (!Arguments.validateArguments())
-        {
-            return;
-        }
+		{
+			return;
+		}
 
-        if(!Arguments.isSet("-path")){
-        	LogHelper.exitWithFormattedError("Use '-path' to define the path to your unittest project compilation.");
-        }
+		if(!Arguments.isSet("-path")){
+			LogHelper.exitWithFormattedError("Use '-path' to define the path to your unittest project compilation.");
+		}
 
-        new RunMain().init();
+		new RunMain().init();
 
-        stamp = Timer.stamp() - stamp;
+		stamp = Timer.stamp() - stamp;
 
-        LogHelper.info("USED TIME: " + stamp + " sec");
+		LogHelper.info("USED TIME: " + stamp + " sec");
 	}
 
 	public function new()
@@ -52,9 +53,9 @@ class RunMain
 
 			platformRunner.prepareTestRun();
 
-     		platformRunner.runTests();
+			platformRunner.runTests();
 
-     		platformRunner.closeTests();
+			platformRunner.closeTests();
 		}
 		else
 		{
@@ -82,6 +83,11 @@ class RunMain
 		if(Arguments.isSet("-html5"))
 		{
 			return new HTML5TestRunner();
+		}
+
+		if(Arguments.isSet("-electron"))
+		{
+			return new ElectronTestRunner();
 		}
 
 		return null;

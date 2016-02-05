@@ -59,10 +59,10 @@ class HTML5TestRunner extends TestingPlatformRunner
 
 	private function startHTTPServer()
 	{
-		var serverTargetDirectory : String  = Arguments.get('-path');
+		var serverTargetDirectory : String = Arguments.get('-path');
 		
- 		server = new Server(serverTargetDirectory, -1, 3000);
-        server.start();
+		server = new Server(serverTargetDirectory, -1, 3000);
+		server.start();
 	}
 
 	//runs in slimerJS only
@@ -124,7 +124,6 @@ class HTML5TestRunner extends TestingPlatformRunner
 										});
 
 		slimerProcess.blockUntilFinished();
-		
 	}
 
 	override public function closeTests() : Void

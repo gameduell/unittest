@@ -55,13 +55,13 @@ class TestingPlatformRunner implements ITestingPlatformRunner
 	private function clearTestResultFile()
 	{
 		// DELETE PREVIOUS TEST
-        if (sys.FileSystem.exists(testResultFile))
-        {
-            sys.FileSystem.deleteFile(testResultFile);
-        }
-        
-        /// CREATE TARGET FOLDER
-        PathHelper.mkdir(Path.directory(testResultFile));
+		if (sys.FileSystem.exists(testResultFile))
+		{
+			sys.FileSystem.deleteFile(testResultFile);
+		}
+
+		// CREATE TARGET FOLDER
+		PathHelper.mkdir(Path.directory(testResultFile));
 	}
 
 	private function checkDependedLibraryInstalled()
