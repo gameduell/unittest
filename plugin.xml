@@ -27,6 +27,12 @@
         </documentation>
     </arg>
 
+    <arg name="-electron" type="void">
+        <documentation>
+            Specifies that you want to run your tests on electron target.
+        </documentation>
+    </arg>
+
     <arg name="-path" type="string">
         <documentation>
             Specfies the path to your apk file. By default it searches for "Export/android/bin/bin/APPLICATION_NAME-release.apk"
