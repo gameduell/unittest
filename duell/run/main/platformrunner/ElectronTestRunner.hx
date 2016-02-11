@@ -27,7 +27,7 @@ class ElectronTestRunner extends TestingPlatformRunner
     override public function runTests()
     {
         super.runTests();
-        LogHelper.info("run tests...");
+
         startHTTPServer();
 
         var targetTime = haxe.Timer.stamp() + DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP;
@@ -52,7 +52,6 @@ class ElectronTestRunner extends TestingPlatformRunner
 
     private function startHTTPServer()
     {
-        LogHelper.info("start http server...");
         var serverTargetDirectory : String = Arguments.get('-path');
         
         server = new Server(serverTargetDirectory, -1, 3000);
@@ -61,13 +60,19 @@ class ElectronTestRunner extends TestingPlatformRunner
 
     private function runApp()
     {
-        LogHelper.info("run app...");
         var electronFolder = Path.join([DuellConfigHelper.getDuellConfigFolderLocation(),
                                         "electron", "bin"]);
+        var args = [Path.join([Arguments.get('-path'), "bootstrap.js"])];
+
+        if(Arguments.isSet("-verbose"))
+        {
+            args.push("--enable-logging");
+        }
+
         nodeProcess = new DuellProcess(
                                         electronFolder,
                                         "electron",
-                                        [Path.join([Arguments.get('-path'), "bootstrap.js"])],
+                                        args,
                                         {
                                             logOnlyIfVerbose : true,
                                             systemCommand : false,
@@ -79,12 +84,17 @@ class ElectronTestRunner extends TestingPlatformRunner
 
     private function quit()
     {
-        LogHelper.info("quit...");
         if (server != null)
         {
             server.shutdown();
         }
-        
+
+        if(nodeProcess != null)
+        {
+            nodeProcess.stdin.writeString("exit\n");
+            nodeProcess.stdin.flush();
+        }
+
         if (nodeProcess != null)
         {
             nodeProcess.kill();
@@ -93,7 +103,6 @@ class ElectronTestRunner extends TestingPlatformRunner
 
     override public function closeTests()
     {
-        LogHelper.info("close tests...");
         super.closeTests();
 
         quit();
