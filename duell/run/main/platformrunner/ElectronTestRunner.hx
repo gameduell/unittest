@@ -9,7 +9,9 @@ import duell.helpers.CommandHelper;
 import duell.helpers.DuellConfigHelper;
 import duell.helpers.LogHelper;
 
+import sys.io.File;
 import haxe.io.Path;
+import haxe.Json;
 
 class ElectronTestRunner extends TestingPlatformRunner
 {
@@ -62,7 +64,10 @@ class ElectronTestRunner extends TestingPlatformRunner
     {
         var electronFolder = Path.join([DuellConfigHelper.getDuellConfigFolderLocation(),
                                         "electron", "bin"]);
-        var args = [Path.join([Arguments.get('-path'), "bootstrap.js"])];
+        var packageJsonContent = File.getContent(Path.join([Arguments.get('-path'), "package.json"]));
+        var packageJson = Json.parse(packageJsonContent);
+
+        var args = [Path.join([Arguments.get('-path'), packageJson.main])];
 
         if(Arguments.isSet("-verbose"))
         {
@@ -91,6 +96,7 @@ class ElectronTestRunner extends TestingPlatformRunner
 
         if(nodeProcess != null)
         {
+            //LogHelper.info("=====================> send exit!!");
             nodeProcess.stdin.writeString("exit\n");
             nodeProcess.stdin.flush();
         }
