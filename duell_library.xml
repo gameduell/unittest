@@ -9,7 +9,7 @@
     <duelllib name="hxjni" version="1.0.0+" if="android"/>
 
     <haxelib name="msignal" version="1.2.2" />
-    <haxelib name="hamcrest" version="https://github.com/gameduell/hamcrest-haxe.git patch-1 src" />
+    <haxelib name="hamcrest" version="2.0.1" />
 
     <platform-config>
     	<android>
